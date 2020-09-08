@@ -4,15 +4,131 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="#ffffff">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/layout1"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+        <ImageButton
+            android:layout_width="30sp"
+            android:layout_height="32sp"
+            android:background="@drawable/menu"
+            android:layout_marginLeft="10sp"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="32sp"
+            android:layout_weight="1"
+            android:background="@drawable/search_bar"
+            android:layout_margin="10sp">
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginLeft="10sp"
+                android:layout_marginRight="8sp"
+                android:layout_marginTop="6sp"
+                android:layout_marginBottom="5sp"
+                android:background="@null"/>
+            <ImageButton
+                android:layout_width="22sp"
+                android:layout_height="22sp"
+                android:background="@drawable/search"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="10dp"/>
+        </LinearLayout>
+        <Button
+            android:layout_width="30sp"
+            android:layout_height="32sp"
+            android:background="@drawable/profile"
+            android:layout_marginRight="10sp"/>
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#B5B5B5"
+        app:layout_constraintTop_toBottomOf="@+id/layout1"
+        app:layout_constraintBottom_toTopOf="@+id/layout2"
+        android:layout_marginBottom="2dp"/>
+
+    <LinearLayout
+        android:id="@+id/layout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/layout1"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10sp"
+            android:layout_marginRight="10sp"
+            android:layout_marginTop="3sp"
+            android:text="메뉴1"
+            android:textColor="#000000"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10sp"
+            android:layout_marginTop="3sp"
+            android:text="메뉴2"
+            android:textColor="#000000"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3sp"
+            android:text="메뉴3"
+            android:textColor="#000000"/>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#FFE04A"
+        app:layout_constraintTop_toBottomOf="@+id/layout2"
+        app:layout_constraintBottom_toTopOf="@+id/line2"
+        android:layout_marginBottom="2dp"
+        android:layout_marginTop="5dp"/>
+    <ImageView
+        android:id="@+id/line2"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#FFE04A"
+        app:layout_constraintTop_toBottomOf="@+id/line"
+        app:layout_constraintBottom_toTopOf="@+id/layout3"
+        android:layout_marginBottom="2dp"
+        android:layout_marginTop="3dp"/>
+
+    <LinearLayout
+        android:id="@+id/layout3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/line2"
+        android:orientation="vertical"
+        android:layout_marginTop="5dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="광고"
+            android:layout_marginTop="10sp"
+            android:layout_marginLeft="6sp"
+            android:layout_marginBottom="3sp"
+            android:textColor="#000000"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/ad_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6sp"
+            android:layout_marginRight="6sp"/>
+    </LinearLayout>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
