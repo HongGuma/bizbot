@@ -7,7 +7,6 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.bizbot.bizbot.Room.Entity.SupportModel;
-import com.bizbot.bizbot.Room.SupportRepository;
 
 import java.util.List;
 

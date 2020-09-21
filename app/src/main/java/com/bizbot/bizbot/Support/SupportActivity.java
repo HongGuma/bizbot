@@ -58,6 +58,7 @@ public class SupportActivity extends AppCompatActivity {
         RecyclerView sRecyclerView = (RecyclerView)findViewById(R.id.support_rv); //지원사업 리스트 리사이클러뷰
         Spinner sortSpinner = (Spinner)findViewById(R.id.support_spinner); //정렬 선택 버튼
         TextView SportCunt = (TextView)findViewById(R.id.support_list_count); //지원사업 건수
+        ProgressBar progressBar = (ProgressBar)findViewById(R.id.progressBar);
 
         //카테고리에서 받아온 지역과 분야 키워드
         String areaWord = getIntent().getStringExtra("areaItem");
@@ -75,19 +76,19 @@ public class SupportActivity extends AppCompatActivity {
             @Override
             public void onChanged(List<SupportModel> supportModels) {
                 //Log.d(TAG, "onChanged: supportModels.size()="+supportModels.size());
-                supportList=supportModels;
-                listAdapter = new SupportListAdapter(getBaseContext(),supportList,areaWord,fieldWord);
-                sRecyclerView.setAdapter(listAdapter);
-                //listAdapter.setList(supportModels);
+                progressBar.setVisibility(View.GONE); //로딩바 지우기
+
+                supportList=supportModels; //db에서 가져온 데이터로 갱신
+                listAdapter = new SupportListAdapter(getBaseContext(),supportList,areaWord,fieldWord); //어뎁터 생성
+                sRecyclerView.setAdapter(listAdapter); //어뎁터 데이터 갱신
+
+                SportCunt.setText("총 "+ listAdapter.ItemCount() +" 건");
             }
         });
 
-        //listAdapter = new SupportListAdapter(getBaseContext(),supportList,areaWord,fieldWord);
-        //sRecyclerView.setAdapter(listAdapter);
-
 
         /*
-        String baseURL = "http://www.bizinfo.go.kr/uss/rss/bizPersonaRss.do?dataType=json"; //데이터 가져올 url
+         //데이터 가져올 url
         LoadData(baseURL); //데이터 가져오는 함수
         if(supportList == null)
             thread.start();
@@ -113,7 +114,6 @@ public class SupportActivity extends AppCompatActivity {
             public void handleMessage(@NonNull Message msg) {
                 super.handleMessage(msg);
 
-                //todo: thread callback 정의
                 switch (msg.what){
                     case 0: //스레드 정상 종료시
                         listAdapter = new SupportLisAdapter(getBaseContext(),supportList,areaWord,fieldWord); //어뎁터 생성
@@ -159,73 +159,14 @@ public class SupportActivity extends AppCompatActivity {
 
     /**
      * 서버에서 데이터 받는 함수
-     * @param url : 데이터 받아올 url
      */
-    private void LoadData(String url) {
+    private void LoadData() {
+        String baseURL = "http://www.bizinfo.go.kr/uss/rss/bizPersonaRss.do?dataType=json";
+
         thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                HttpURLConnection conn = null;
-                Message message = new Message();
-                long start=0,end=0;
-                try{
-                    start = System.currentTimeMillis();
-                    //RequestURLConnection requestURLConnection = new RequestURLConnection(url);
-                    String line = "";
 
-                    InputStream is = getAssets().open("data.json");
-                    InputStreamReader ir = new InputStreamReader(is);
-                    BufferedReader br = new BufferedReader(ir);
-
-                    line = br.readLine();
-
-                    //line = requestURLConnection.DataLoad();
-
-                    JSONObject json = new JSONObject(line);
-                    JSONArray jsonArray = json.getJSONArray("jsonArray");
-                    for(int i=0; i<jsonArray.length();i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-
-                        SupportModel s_list = new SupportModel();
-
-                        String industNm = jsonObject.optString("industNm");
-                        s_list.setIndustNm(industNm);
-                        s_list.setRceptInsttEmailAdres(jsonObject.optString("rceptInsttEmailAdres"));
-                        s_list.setInqireCo(jsonObject.optInt("inqireCo"));
-                        s_list.setRceptEngnHmpgUrl(jsonObject.optString("rceptEngnHmpgUrl"));
-                        s_list.setPblancUrl(jsonObject.optString("pblancUrl"));
-                        s_list.setJrsdInsttNm(jsonObject.optString("jrsdInsttNm"));
-                        s_list.setRceptEngnNm(jsonObject.optString("rceptEngnNm"));
-                        s_list.setEntrprsStle(jsonObject.optString("entrprsStle"));
-                        s_list.setPldirSportRealmLclasCodeNm(jsonObject.optString("pldirSportRealmLclasCodeNm"));
-                        s_list.setTrgetNm(jsonObject.optString("trgetNm"));
-                        s_list.setRceptInsttTelno(jsonObject.optString("rceptInsttTelno"));
-                        s_list.setBsnsSumryCn(jsonObject.optString("bsnsSumryCn0px"));
-                        s_list.setReqstBeginEndDe(jsonObject.optString("reqstBeginEndDe"));
-                        s_list.setAreaNm(jsonObject.optString("areaNm"));
-                        s_list.setPldirSportRealmMlsfcCodeNm(jsonObject.optString("pldirSportRealmMlsfcCodeNm"));
-                        s_list.setRceptInsttChargerDeptNm(jsonObject.optString("rceptInsttChargerDeptNm"));
-                        s_list.setRceptInsttChargerNm(jsonObject.optString("rceptInsttChargerNm"));
-                        s_list.setPblancNm(jsonObject.optString("pblancNm"));
-                        s_list.setCreatPnttm(jsonObject.optString("creatPnttm"));
-                        s_list.setPblancId(jsonObject.optString("pblancId"));
-
-                        supportList.add(s_list);
-                    }
-                    end = System.currentTimeMillis();
-                    //Log.d(TAG, "run: supportList="+supportList.get(0).getPblancNm());
-
-                } catch (JSONException | IOException e){
-                    e.printStackTrace();
-                    message.what = THREAD_ERROR;
-                }finally {
-                    System.out.println("data loading : "+(end-start)/1000.0);
-                    message.what = THREAD_END; //정상 종료
-                    asyncDialog = new ProgressBar(SupportActivity.this);
-                    asyncDialog.setProgress(R.id.progressBar);
-
-                    mHandler.sendMessage(message);
-                }
             }
         });
 

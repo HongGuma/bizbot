@@ -15,7 +15,7 @@ import java.util.List;
 
 @Dao
 public interface  SupportDAO {
-    @Insert(onConflict = OnConflictStrategy.REPLACE) //중복 id일 경우 교체
+    @Insert(onConflict = OnConflictStrategy.REPLACE) //중복 id일 경우 덮어쓴다.
     void insert(SupportModel supports);
 
     @Delete

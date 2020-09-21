@@ -1,9 +1,10 @@
-package com.bizbot.bizbot.Room;
+package com.bizbot.bizbot.Room.ViewModel;
 
 import android.app.Application;
 
 import androidx.lifecycle.LiveData;
 
+import com.bizbot.bizbot.Room.AppDatabase;
 import com.bizbot.bizbot.Room.DAO.SupportDAO;
 import com.bizbot.bizbot.Room.Entity.SupportModel;
 

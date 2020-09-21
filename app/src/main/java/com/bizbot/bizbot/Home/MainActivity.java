@@ -9,16 +9,21 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.bizbot.bizbot.Category.CategoryAdapter;
+import com.bizbot.bizbot.Synchronization_Service;
 import com.bizbot.bizbot.Room.AppDatabase;
 import com.bizbot.bizbot.Room.Entity.SupportModel;
 import com.bizbot.bizbot.LoadSupportData;
@@ -28,10 +33,13 @@ import com.bizbot.bizbot.Support.SupportActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
+    public static final int REPEAT_DELAY = 1800000; //반복할 시간 (30분)
     public static final int THREAD_END = 0;
     public static final int THREAD_ERROR = 1;
 
@@ -39,8 +47,10 @@ public class MainActivity extends AppCompatActivity {
     CategoryAdapter areaAdapter; //지역 어뎁터
     CategoryAdapter fieldAdapter; //분야 어뎁터
     Handler mHandler;
+    Handler timerHandler;
     boolean areaBtnChk = false;
     boolean fieldBtnChk = false;
+    int count = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,14 +102,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
         //지역,분야 리사이클러뷰
         cRecyclerView.setHasFixedSize(true);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(MainActivity.this,5); //지역, 분야 카테고리 리사이클러뷰
         GridLayoutManager gridLayoutManager2 = new GridLayoutManager(MainActivity.this,2);
-
-
 
         //지역 버튼 클릭시
         areaBtn.setOnClickListener(new View.OnClickListener() {
@@ -140,15 +146,19 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        /*
-        //데이터 동기화
-        new Handler(Looper.myLooper()).postDelayed(new Runnable() {
+        //데이터 동기화 타이머
+        timerHandler = new Handler(Looper.myLooper()){
             @Override
-            public void run() {
-                LoadDataAsync(baseURL);
+            public void handleMessage(@NonNull Message msg) {
+                super.handleMessage(msg);
+                Log.d(TAG, "handleMessage: 백그라운드 시작");
+                LoadDataAsync();
+                this.sendEmptyMessageDelayed(0,REPEAT_DELAY);
             }
-        },36000);
+        };
+        timerHandler.sendEmptyMessage(0);
 
+        //데이터 동기화 핸들러
         mHandler = new Handler(Looper.myLooper()){
             @Override
             public void handleMessage(@NonNull Message msg) {
@@ -156,37 +166,45 @@ public class MainActivity extends AppCompatActivity {
                 switch (msg.what){
                     case THREAD_END: //스레드 정상 종료시
                         adListAdapter.setList(adList); //데이터 갱신
+                        Log.d(TAG, "handleMessage: 데이터 갱신 성공");
                         break;
                     case THREAD_ERROR: //스레드에서 에러 발생시
-                    default:
                         Toast.makeText(MainActivity.this,"데이터 업로드에 실패하였습니다.",Toast.LENGTH_SHORT).show(); //디버깅용
-                        //나중에 코드 채워 넣기
                         break;
+                    default:
+                        Toast.makeText(MainActivity.this,"오류가 발생했습니다.",Toast.LENGTH_SHORT).show(); //디버깅용
+                        //나중에 코드 채워 넣기
                 }
 
             }
         };
 
-         */
-
 
     }
 
-
-    public void LoadDataAsync(String url){
-
+    //데이터 동기화 서버에서 데이터 받아옴
+    public void LoadDataAsync(){
         Thread thread = new Thread(()->{
-            AppDatabase db = Room.databaseBuilder(getBaseContext(),AppDatabase.class,"app_db").build();
+            String baseURL = "http://www.bizinfo.go.kr/uss/rss/bizPersonaRss.do?dataType=json";
 
-            LoadSupportData load = new LoadSupportData(url);
+            Log.d(TAG, "LoadDataAsync: 스레드 실행");
+
+            LoadSupportData load = new LoadSupportData(baseURL);
             Message message = new Message();
             message.what = load.LoadData(getBaseContext());
+            //message.what = 0;
             mHandler.sendMessage(message);
+
         });
 
         thread.start();
 
     }
 
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        timerHandler.sendEmptyMessage(0);
+        finish();
+    }
 }
