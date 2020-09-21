@@ -1,9 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffffff"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <TextView
+        android:id="@+id/error_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="데이터를 불러올 수 없습니다."
+        android:textColor="#000000"
+        android:gravity="center_horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/layout1"
@@ -13,26 +35,27 @@
         android:orientation="horizontal"
         android:gravity="center_vertical">
         <ImageButton
+            android:id="@+id/category_menu_btn"
             android:layout_width="30sp"
             android:layout_height="32sp"
             android:background="@drawable/menu"
             android:layout_marginLeft="10sp"/>
         <LinearLayout
+            android:id="@+id/search_btn"
             android:layout_width="wrap_content"
             android:layout_height="32sp"
             android:layout_weight="1"
             android:background="@drawable/search_bar"
             android:layout_margin="10sp">
-            <EditText
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_marginLeft="10sp"
                 android:layout_marginRight="8sp"
                 android:layout_marginTop="6sp"
-                android:layout_marginBottom="5sp"
-                android:background="@null"/>
-            <ImageButton
+                android:layout_marginBottom="5sp"/>
+            <ImageView
                 android:layout_width="22sp"
                 android:layout_height="22sp"
                 android:background="@drawable/search"

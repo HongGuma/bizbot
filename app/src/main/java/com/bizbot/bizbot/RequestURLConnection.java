@@ -35,28 +35,12 @@ public class RequestURLConnection {
             URL url1 = new URL(url); //url 가져오기
             conn = (HttpURLConnection) url1.openConnection(); //url 연결
 
-            /*
             BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(),"UTF-8"));
             //Log.d(TAG, "onCreate: reader = "+reader.toString());
 
             String line = reader.readLine();
             //Log.d(TAG, "DataLoad: line="+line);
-            */
 
-            /*
-            InputStream is = getAssets().open("data.json");
-            InputStreamReader ir = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(ir);
-
-            line = br.readLine();
-            Log.d(TAG, "DataLoad: line="+line);
-
-            is.close();
-            ir.close();
-            br.close();
-
-
-             */
             return line;
 
         }catch (MalformedURLException e){
