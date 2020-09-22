@@ -7,14 +7,10 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
@@ -22,9 +18,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.bizbot.bizbot.Category.CategoryAdapter;
-import com.bizbot.bizbot.Synchronization_Service;
-import com.bizbot.bizbot.Room.AppDatabase;
+import com.bizbot.bizbot.Support.CategoryAdapter;
 import com.bizbot.bizbot.Room.Entity.SupportModel;
 import com.bizbot.bizbot.LoadSupportData;
 import com.bizbot.bizbot.R;
@@ -33,13 +27,11 @@ import com.bizbot.bizbot.Support.SupportActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
-    public static final int REPEAT_DELAY = 1800000; //반복할 시간 (30분)
+    public static final int REPEAT_DELAY = 1800000;//반복할 시간 (30분 = 1800000)
     public static final int THREAD_END = 0;
     public static final int THREAD_ERROR = 1;
 
@@ -59,10 +51,12 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView adRecyclerView = (RecyclerView)findViewById(R.id.ad_list); //광고 리사이클러뷰
         RecyclerView cRecyclerView = (RecyclerView)findViewById(R.id.area_category_rv);//카테고리 리사이클러뷰
+        LinearLayout search = (LinearLayout)findViewById(R.id.search_bar);
         LinearLayout areaBtn = (LinearLayout)findViewById(R.id.area_btn); //지역 버튼
         LinearLayout field = (LinearLayout)findViewById(R.id.field_btn); //분야 버튼
         LinearLayout categoryLayout = (LinearLayout)findViewById(R.id.area_category); //카테고리 레이아웃
         BottomNavigationView bottomBtn = (BottomNavigationView)findViewById(R.id.bottom_navigation); //하단 네비게이션 버튼
+        
 
         //String baseURL = "http://www.bizinfo.go.kr/uss/rss/bizPersonaRss.do?dataType=json"; //데이터 가져올 url
 
@@ -165,7 +159,6 @@ public class MainActivity extends AppCompatActivity {
                 super.handleMessage(msg);
                 switch (msg.what){
                     case THREAD_END: //스레드 정상 종료시
-                        adListAdapter.setList(adList); //데이터 갱신
                         Log.d(TAG, "handleMessage: 데이터 갱신 성공");
                         break;
                     case THREAD_ERROR: //스레드에서 에러 발생시

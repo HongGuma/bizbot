@@ -28,29 +28,17 @@ public interface  SupportDAO {
     @Query("SELECT * FROM Supports")
     LiveData<List<SupportModel>> getAll();
 
+    //모든 데이터 출력 (live data 아님 한번만 사용)
+    @Query("SELECT * FROM SUPPORTS")
+    List<SupportModel> Init();
+
     //모든 데이터 삭제
     @Query("DELETE FROM SUPPORTS")
     void deleteAll();
 
-    //타이틀
-    @Query("SELECT pblancNm FROM supports")
-    LiveData<List<String>> getPblancNm();
-
-    //접수 기관
-    @Query("SELECT jrsdInsttNm FROM supports")
-    LiveData<List<String>> getJrsdInsttNm();
-
-    //접수 기간
-    @Query("SELECT reqstBeginEndDe FROM supports")
-    LiveData<List<String>> getReqstBeginEndDe();
-
     //디버깅용
     @Query("SELECT pblancNm FROM Supports WHERE id = :id")
     String getTest(int id);
-
-    //갯수
-    @Query("SELECT count(id) FROM SUPPORTS")
-    String getCnt();
 
 
 }

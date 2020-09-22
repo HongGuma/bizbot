@@ -21,12 +21,13 @@
             android:background="@drawable/menu"
             android:layout_marginLeft="10sp"/>
         <LinearLayout
+            android:id="@+id/search_bar"
             android:layout_width="wrap_content"
             android:layout_height="32sp"
             android:layout_weight="1"
             android:background="@drawable/search_bar"
             android:layout_margin="10sp">
-            <EditText
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"

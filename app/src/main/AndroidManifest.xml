@@ -14,11 +14,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar"
         android:usesCleartextTraffic="true">
-        <service
-            android:name=".Synchronization_Service"
-            android:enabled="true"
-            android:exported="false"></service>
-
         <activity android:name=".Home.Intro">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,8 +22,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".Home.MainActivity" />
+        <activity android:name=".Search.SearchActivity"/>
         <activity android:name=".Support.SupportActivity" />
-        <activity android:name=".Category.CategoryActivity" />
+        <activity android:name=".Support.CategoryActivity" />
     </application>
 
 </manifest>

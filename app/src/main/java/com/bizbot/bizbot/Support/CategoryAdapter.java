@@ -1,9 +1,6 @@
-package com.bizbot.bizbot.Category;
+package com.bizbot.bizbot.Support;
 
-import android.graphics.drawable.Drawable;
-import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bizbot.bizbot.R;
 
 import android.os.Handler;
-import java.util.logging.LogRecord;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
     private static final String TAG = "CategoryAdapter";
