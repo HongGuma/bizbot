@@ -89,22 +89,6 @@ public class MainActivity extends AppCompatActivity {
         //광고 리사이클러뷰 어뎁터
         AdListAdapter adListAdapter = new AdListAdapter(getBaseContext());
 
-        /*
-        getDBData();//db에서 초기 값 가져오기
-
-        //DB 스레드 핸들러, 정상적으로 값을 가져오면 리스트 어뎁터 설정
-        DBHandler = new Handler(Looper.myLooper()){
-            @Override
-            public void handleMessage(@NonNull Message msg) {
-                super.handleMessage(msg);
-                if(msg.what == 0){
-                    adListAdapter.setList(adList);
-                    adRecyclerView.setAdapter(adListAdapter);
-                }
-            }
-        };
-         */
-
         //변화 감지해서 리스트 갱신
         //todo: 지금은 지원 사업 리스트 가져오지만 나중에 광고 리스트로 수정
         SupportViewModel supportViewModel = ViewModelProviders.of(this).get(SupportViewModel.class);
@@ -182,27 +166,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-
-    /*
-    public void getDBData(){
-        AppDatabase db = Room.databaseBuilder(getBaseContext(),AppDatabase.class,"app_db").build();
-
-        Thread thread = new Thread(()->{
-            adList = db.supportDAO().Init();
-            Message message = new Message();
-            if(adList != null)
-                message.what = 0;
-            else
-                message.what = 1;
-            db.close();
-            DBHandler.sendMessage(message);
-        });
-
-        thread.start();
-
-    }
-
-     */
 
 
     @Override

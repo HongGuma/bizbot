@@ -92,12 +92,12 @@ public class SupportActivity extends AppCompatActivity {
                 //Log.d(TAG, "onChanged: supportModels.size()="+supportModels.size());
                 if(supportModels != null){
                     progressBar.setVisibility(View.GONE); //로딩바 지우기
-                    listAdapter.setList(supportModels);
+                    supportList = supportModels;
+                    listAdapter.setList(supportList);
                     sRecyclerView.setAdapter(listAdapter); //어뎁터 데이터 갱신
 
-                    SportCunt.setText("총 "+ listAdapter.ItemCount() +" 건");
+                    SportCunt.setText("총 "+ listAdapter.getItemCount() +" 건");
 
-                    ListSort(sortSpinner,listAdapter,sRecyclerView);
                 }
                 /*
                 if(supportList.size() != supportModels.size()){
@@ -117,6 +117,22 @@ public class SupportActivity extends AppCompatActivity {
             }
         });
 
+        //리스트 정렬
+        ArrayAdapter spinAdapter = ArrayAdapter.createFromResource(getBaseContext(),R.array.sort_mode,R.layout.spinner_dropdown);
+        sortSpinner.setAdapter(spinAdapter);
+        sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if(supportList != null) {
+                    listAdapter.ListSort(i);
+                    sRecyclerView.scrollToPosition(0);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) { }
+        });
+
         //닫기 버튼 클릭시
         closeBtn.setOnClickListener(view -> {
             finish();
@@ -128,52 +144,7 @@ public class SupportActivity extends AppCompatActivity {
             startActivity(new Intent(SupportActivity.this, CategoryActivity.class));
         });
 
-
-
-
-
     }
-
-    public void ListSort(Spinner sortSpinner, SupportListAdapter listAdapter,RecyclerView sRecyclerView){
-        //리스트 정렬
-        ArrayAdapter spinAdapter = ArrayAdapter.createFromResource(this,R.array.sort_mode,R.layout.spinner_dropdown);
-        sortSpinner.setAdapter(spinAdapter);
-        sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if(listAdapter != null) {
-                    listAdapter.ListSort(i);
-                    sRecyclerView.scrollToPosition(0);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-    }
-
-    /*
-    public void getDBData(){
-        AppDatabase db = Room.databaseBuilder(getBaseContext(),AppDatabase.class,"app_db").build();
-
-        Thread thread = new Thread(()->{
-            supportList = db.supportDAO().Init();
-            Message message = new Message();
-            if(supportList != null)
-                message.what = 0;
-            else
-                message.what = 1;
-            db.close();
-            mHandler.sendMessage(message);
-        });
-
-        thread.start();
-
-    }
-
-     */
 
 
     /**

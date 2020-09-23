@@ -33,8 +33,6 @@ public class SupportListAdapter extends RecyclerView.Adapter<SupportListAdapter.
         this.context = context;
         this.area = area;
         this.field = field;
-
-        FilterItem(area,field);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
@@ -193,5 +191,7 @@ public class SupportListAdapter extends RecyclerView.Adapter<SupportListAdapter.
         this.sList = list;
         this.filterList = list;
         notifyDataSetChanged();
+
+        FilterItem(area,field);
     }
 }

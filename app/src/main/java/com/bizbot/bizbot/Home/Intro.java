@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -17,13 +16,11 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.room.Room;
 
-import com.bizbot.bizbot.Background.DataService;
 import com.bizbot.bizbot.Background.LoadSupportData;
 import com.bizbot.bizbot.Room.AppDatabase;
 import com.bizbot.bizbot.Room.Entity.SupportModel;
 import com.bizbot.bizbot.R;
 import com.bizbot.bizbot.Room.ViewModel.SupportViewModel;
-import com.bizbot.bizbot.SupportDTO;
 
 import java.util.ArrayList;
 import java.util.List;
