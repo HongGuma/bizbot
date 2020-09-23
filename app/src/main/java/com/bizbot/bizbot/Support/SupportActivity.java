@@ -41,7 +41,6 @@ public class SupportActivity extends AppCompatActivity {
 
     private List<SupportModel> supportList;
     ProgressBar asyncDialog;
-    SupportListAdapter listAdapter;
     Handler mHandler;
 
     @Override
@@ -49,6 +48,7 @@ public class SupportActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.support_activity);
 
+        //레이아웃 선언
         Button closeBtn = (Button)findViewById(R.id.close); //닫기 버튼
         ImageButton categoryBtn = (ImageButton)findViewById(R.id.category_menu_btn); //카테고리 메뉴 버튼
         RecyclerView sRecyclerView = (RecyclerView)findViewById(R.id.support_rv); //지원사업 리스트 리사이클러뷰
@@ -56,7 +56,6 @@ public class SupportActivity extends AppCompatActivity {
         TextView SportCunt = (TextView)findViewById(R.id.support_list_count); //지원사업 건수
         TextView pop_up = (TextView)findViewById(R.id.new_pop_up); //새 게시물 팝업
         ProgressBar progressBar = (ProgressBar)findViewById(R.id.progressBar); //로딩 아이콘
-
 
         //카테고리에서 받아온 지역과 분야 키워드
         String areaWord = getIntent().getStringExtra("areaItem");
@@ -66,7 +65,9 @@ public class SupportActivity extends AppCompatActivity {
         sRecyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager =new LinearLayoutManager(SupportActivity.this);
         sRecyclerView.setLayoutManager(layoutManager);
+        SupportListAdapter listAdapter = new SupportListAdapter(getBaseContext(),areaWord,fieldWord); //어뎁터 생성
 
+        /*
         getDBData();//
         mHandler = new Handler(Looper.myLooper()){
             @Override
@@ -75,17 +76,30 @@ public class SupportActivity extends AppCompatActivity {
                 if(msg.what == 0){ //데이터 로드 성공
                     progressBar.setVisibility(View.GONE); //로딩바 지우기
                     listAdapter = new SupportListAdapter(getBaseContext(),supportList,areaWord,fieldWord); //어뎁터 생성
+                    SportCunt.setText("총 "+ listAdapter.ItemCount() +" 건");
                 }else //데이터 로드 실패
                     Toast.makeText(SupportActivity.this,"데이터를 불러올 수 없습니다.",Toast.LENGTH_SHORT).show();
             }
         };
 
-        //DB에서 데이터 가져오기
+         */
+
+        //변화 감지해서 리스트 갱신
         SupportViewModel supportViewModel = ViewModelProviders.of(this).get(SupportViewModel.class);
         supportViewModel.getAllList().observe(SupportActivity.this, new Observer<List<SupportModel>>() {
             @Override
             public void onChanged(List<SupportModel> supportModels) {
                 //Log.d(TAG, "onChanged: supportModels.size()="+supportModels.size());
+                if(supportModels != null){
+                    progressBar.setVisibility(View.GONE); //로딩바 지우기
+                    listAdapter.setList(supportModels);
+                    sRecyclerView.setAdapter(listAdapter); //어뎁터 데이터 갱신
+
+                    SportCunt.setText("총 "+ listAdapter.ItemCount() +" 건");
+
+                    ListSort(sortSpinner,listAdapter,sRecyclerView);
+                }
+                /*
                 if(supportList.size() != supportModels.size()){
                     pop_up.setVisibility(View.VISIBLE);
                     pop_up.setOnClickListener(new View.OnClickListener() {
@@ -97,10 +111,9 @@ public class SupportActivity extends AppCompatActivity {
                     });
                 }
 
-                supportList=supportModels; //db에서 가져온 데이터로 갱신
-                sRecyclerView.setAdapter(listAdapter); //어뎁터 데이터 갱신
+                 */
 
-                SportCunt.setText("총 "+ listAdapter.ItemCount() +" 건");
+
             }
         });
 
@@ -116,6 +129,12 @@ public class SupportActivity extends AppCompatActivity {
         });
 
 
+
+
+
+    }
+
+    public void ListSort(Spinner sortSpinner, SupportListAdapter listAdapter,RecyclerView sRecyclerView){
         //리스트 정렬
         ArrayAdapter spinAdapter = ArrayAdapter.createFromResource(this,R.array.sort_mode,R.layout.spinner_dropdown);
         sortSpinner.setAdapter(spinAdapter);
@@ -133,11 +152,9 @@ public class SupportActivity extends AppCompatActivity {
 
             }
         });
-
-        getDBData();
-
     }
 
+    /*
     public void getDBData(){
         AppDatabase db = Room.databaseBuilder(getBaseContext(),AppDatabase.class,"app_db").build();
 
@@ -148,13 +165,15 @@ public class SupportActivity extends AppCompatActivity {
                 message.what = 0;
             else
                 message.what = 1;
-
+            db.close();
             mHandler.sendMessage(message);
         });
 
         thread.start();
 
     }
+
+     */
 
 
     /**

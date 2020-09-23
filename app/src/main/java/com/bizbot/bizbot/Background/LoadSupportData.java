@@ -1,4 +1,4 @@
-package com.bizbot.bizbot;
+package com.bizbot.bizbot.Background;
 
 
 import android.content.Context;
@@ -12,11 +12,6 @@ import com.bizbot.bizbot.Room.Entity.SupportModel;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 
 public class LoadSupportData{
@@ -88,7 +83,7 @@ public class LoadSupportData{
             //Log.d(TAG, "run: supportList="+supportList.get(0).getPblancNm());
 
             Log.d(TAG, "data loading : "+(end-start)/1000.0+" s");
-
+            db.close();
             return THREAD_END; //정상 종료
         }catch (JSONException e){
             e.printStackTrace();

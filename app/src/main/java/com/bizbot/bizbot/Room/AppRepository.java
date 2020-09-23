@@ -23,6 +23,7 @@ public class AppRepository {
         AppDatabase db = AppDatabase.getInstance(application);
         mSupportDAO = db.supportDAO(); //db에 있는 supportDAO 가져오기
         allSupportItem = mSupportDAO.getAll(); //지원 사업 아이템 전부 가져오기
+        db.close();
     }
 
 

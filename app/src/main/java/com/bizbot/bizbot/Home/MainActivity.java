@@ -18,18 +18,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.bizbot.bizbot.Room.AppDatabase;
+import com.bizbot.bizbot.Search.SearchActivity;
 import com.bizbot.bizbot.Setting.SettingActivity;
-import com.bizbot.bizbot.Support.CategoryAdapter;
 import com.bizbot.bizbot.Room.Entity.SupportModel;
-import com.bizbot.bizbot.LoadSupportData;
+import com.bizbot.bizbot.Background.LoadSupportData;
 import com.bizbot.bizbot.R;
 import com.bizbot.bizbot.Room.ViewModel.SupportViewModel;
 import com.bizbot.bizbot.Support.SupportActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -40,20 +40,19 @@ public class MainActivity extends AppCompatActivity {
     public static final int THREAD_ERROR = 1;
 
     private List<SupportModel> adList; //광고 데이터 리스트
-    CategoryAdapter areaAdapter; //지역 어뎁터
-    CategoryAdapter fieldAdapter; //분야 어뎁터
-    Handler mHandler;
-    Handler timerHandler;
-    Handler DBHandler;
+    AreaCategoryAdapter areaAdapter; //지역 어뎁터
+    AreaCategoryAdapter fieldAdapter; //분야 어뎁터
+
+    Handler DBHandler; //db 핸들러
     boolean areaBtnChk = false;
     boolean fieldBtnChk = false;
-    int count = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
+        //레이아웃 선언 부분
         RecyclerView adRecyclerView = (RecyclerView)findViewById(R.id.ad_list); //광고 리사이클러뷰
         RecyclerView cRecyclerView = (RecyclerView)findViewById(R.id.area_category_rv);//카테고리 리사이클러뷰
         LinearLayout search = (LinearLayout)findViewById(R.id.search_bar);
@@ -67,15 +66,16 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener = menuItem -> {
             Intent intent;
             switch (menuItem.getItemId()){
+                //todo: home 버튼 누를때 기능 아직 미정
                 case R.id.home:
                     break;
-                case R.id.support:
+                case R.id.support: //지원 사업 페이지로 이동
                     intent = new Intent(MainActivity.this, SupportActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(intent);
                     break;
-                case R.id.favourite:
-                case R.id.partner:
+                case R.id.favourite: //관심 지원 사업 페이지로 이동
+                case R.id.partner: //파트너 사업 페이지로 이동
             }
             return true;
         };
@@ -85,10 +85,14 @@ public class MainActivity extends AppCompatActivity {
         adRecyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager =new LinearLayoutManager(MainActivity.this);
         adRecyclerView.setLayoutManager(layoutManager);
+
         //광고 리사이클러뷰 어뎁터
         AdListAdapter adListAdapter = new AdListAdapter(getBaseContext());
+
+        /*
         getDBData();//db에서 초기 값 가져오기
 
+        //DB 스레드 핸들러, 정상적으로 값을 가져오면 리스트 어뎁터 설정
         DBHandler = new Handler(Looper.myLooper()){
             @Override
             public void handleMessage(@NonNull Message msg) {
@@ -99,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
+         */
 
         //변화 감지해서 리스트 갱신
         //todo: 지금은 지원 사업 리스트 가져오지만 나중에 광고 리스트로 수정
@@ -111,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
                 adRecyclerView.setAdapter(adListAdapter);
             }
         });
+
 
         //지역,분야 리사이클러뷰
         cRecyclerView.setHasFixedSize(true);
@@ -125,7 +131,8 @@ public class MainActivity extends AppCompatActivity {
                     fieldBtnChk = false; //분야 버튼 false
                     cRecyclerView.setLayoutManager(gridLayoutManager); //그리드 레이아웃 매니저 설정
                     categoryLayout.setVisibility(View.VISIBLE); //카테고리 보이기
-                    areaAdapter = new CategoryAdapter(1); // type: 1 = 지역, 2 = 분야
+                    //areaAdapter = new CategoryAdapter(1); // type: 1 = 지역, 2 = 분야
+                    areaAdapter = new AreaCategoryAdapter(1);
                     cRecyclerView.setAdapter(areaAdapter); //어뎁터 설정
                     areaBtnChk = true;
                 }else{
@@ -144,7 +151,8 @@ public class MainActivity extends AppCompatActivity {
                     areaBtnChk = false;
                     cRecyclerView.setLayoutManager(gridLayoutManager2);
                     categoryLayout.setVisibility(View.VISIBLE);
-                    fieldAdapter = new CategoryAdapter(2);
+                    //fieldAdapter = new CategoryAdapter(2);
+                    fieldAdapter = new AreaCategoryAdapter(2);
                     cRecyclerView.setAdapter(fieldAdapter);
                     fieldBtnChk = true;
                 }else{
@@ -163,44 +171,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //데이터 동기화 타이머
-        /*
-        timerHandler = new Handler(Looper.myLooper()){
+        //검색바 클릭시
+        search.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void handleMessage(@NonNull Message msg) {
-                super.handleMessage(msg);
-                Log.d(TAG, "handleMessage: 백그라운드 시작");
-                LoadDataAsync();
-                this.sendEmptyMessageDelayed(0,REPEAT_DELAY);
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, SearchActivity.class));
             }
-        };
-        timerHandler.sendEmptyMessage(0);
-
-        //데이터 동기화 핸들러
-        mHandler = new Handler(Looper.myLooper()){
-            @Override
-            public void handleMessage(@NonNull Message msg) {
-                super.handleMessage(msg);
-                switch (msg.what){
-                    case THREAD_END: //스레드 정상 종료시
-                        Log.d(TAG, "handleMessage: 데이터 갱신 성공");
-                        break;
-                    case THREAD_ERROR: //스레드에서 에러 발생시
-                        Toast.makeText(MainActivity.this,"데이터 업로드에 실패하였습니다.",Toast.LENGTH_SHORT).show(); //디버깅용
-                        break;
-                    default:
-                        Toast.makeText(MainActivity.this,"오류가 발생했습니다.",Toast.LENGTH_SHORT).show(); //디버깅용
-                        //나중에 코드 채워 넣기
-                }
-
-            }
-        };
+        });
 
 
-         */
 
     }
 
+    /*
     public void getDBData(){
         AppDatabase db = Room.databaseBuilder(getBaseContext(),AppDatabase.class,"app_db").build();
 
@@ -211,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
                 message.what = 0;
             else
                 message.what = 1;
-
+            db.close();
             DBHandler.sendMessage(message);
         });
 
@@ -219,29 +202,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    //데이터 동기화 서버에서 데이터 받아옴
-    public void LoadDataAsync(){
-        Thread thread = new Thread(()->{
-            String baseURL = "http://www.bizinfo.go.kr/uss/rss/bizPersonaRss.do?dataType=json";
+     */
 
-            Log.d(TAG, "LoadDataAsync: 스레드 실행");
-
-            LoadSupportData load = new LoadSupportData(baseURL);
-            Message message = new Message();
-            message.what = load.LoadData(getBaseContext());
-            //message.what = 0;
-            mHandler.sendMessage(message);
-
-        });
-
-        thread.start();
-
-    }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        timerHandler.sendEmptyMessage(0);
         finish();
     }
 }

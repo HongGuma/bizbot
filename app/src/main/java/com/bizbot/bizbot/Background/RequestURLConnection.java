@@ -1,4 +1,4 @@
-package com.bizbot.bizbot;
+package com.bizbot.bizbot.Background;
 
 import android.content.res.AssetManager;
 import android.util.Log;

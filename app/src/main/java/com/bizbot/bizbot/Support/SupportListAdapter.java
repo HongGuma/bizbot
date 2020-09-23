@@ -29,9 +29,7 @@ public class SupportListAdapter extends RecyclerView.Adapter<SupportListAdapter.
     private String area = null;
     private String field = null;
 
-    public SupportListAdapter(Context context, List<SupportModel> list, String area, String field){
-        this.sList = list;
-        this.filterList = list;
+    public SupportListAdapter(Context context, String area, String field){
         this.context = context;
         this.area = area;
         this.field = field;
@@ -131,7 +129,7 @@ public class SupportListAdapter extends RecyclerView.Adapter<SupportListAdapter.
             filtering = sList;
         }
 
-        filterList = filtering;
+        filterList = (List<SupportModel>) filtering;
     }
 
     /**
