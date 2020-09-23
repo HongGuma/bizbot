@@ -37,8 +37,7 @@ public interface  SupportDAO {
     void deleteAll();
 
     //디버깅용
-    @Query("SELECT pblancNm FROM Supports WHERE id = :id")
-    String getTest(int id);
+
 
 
 }

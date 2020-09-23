@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.bizbot.bizbot.Room.Entity.SupportModel;
+import com.bizbot.bizbot.Room.AppRepository;
 
 import java.util.List;
 
@@ -14,14 +15,14 @@ import java.util.List;
  * Model 과 UI 사이 통신 역할
  */
 public class SupportViewModel extends AndroidViewModel {
-    private SupportRepository mSupportRepository;
+    private AppRepository mAppRepository;
     private LiveData<List<SupportModel>> mAllItem;
 
 
     public SupportViewModel(@NonNull Application application) {
         super(application);
-        mSupportRepository = new SupportRepository(application);
-        mAllItem = mSupportRepository.getAll();
+        mAppRepository = new AppRepository(application);
+        mAllItem = mAppRepository.getAllSupportItem();
     }
 
     public LiveData<List<SupportModel>> getAllList(){
@@ -29,7 +30,8 @@ public class SupportViewModel extends AndroidViewModel {
     }
 
 
+
     public void insert(SupportModel support){
-        mSupportRepository.insert(support);
+        mAppRepository.insertSupportItem(support);
     }
 }

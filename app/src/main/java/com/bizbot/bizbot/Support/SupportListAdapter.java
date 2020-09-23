@@ -183,7 +183,7 @@ public class SupportListAdapter extends RecyclerView.Adapter<SupportListAdapter.
                 break;
             default: //아무것도 선택 안했을 때
                 Comparator<SupportModel> reset = (item1, item2) -> {
-                    int result = item1.getId() <= item2.getId() ? -1 : 1;
+                    int result = item1.getPblancId().compareTo(item2.getPblancId());
                     return result;
                 };
                 Collections.sort(filterList,reset);

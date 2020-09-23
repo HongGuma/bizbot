@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,9 +16,12 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.bizbot.bizbot.Room.AppDatabase;
+import com.bizbot.bizbot.Setting.SettingActivity;
 import com.bizbot.bizbot.Support.CategoryAdapter;
 import com.bizbot.bizbot.Room.Entity.SupportModel;
 import com.bizbot.bizbot.LoadSupportData;
@@ -40,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     CategoryAdapter fieldAdapter; //분야 어뎁터
     Handler mHandler;
     Handler timerHandler;
+    Handler DBHandler;
     boolean areaBtnChk = false;
     boolean fieldBtnChk = false;
     int count = 0;
@@ -56,9 +61,7 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout field = (LinearLayout)findViewById(R.id.field_btn); //분야 버튼
         LinearLayout categoryLayout = (LinearLayout)findViewById(R.id.area_category); //카테고리 레이아웃
         BottomNavigationView bottomBtn = (BottomNavigationView)findViewById(R.id.bottom_navigation); //하단 네비게이션 버튼
-        
-
-        //String baseURL = "http://www.bizinfo.go.kr/uss/rss/bizPersonaRss.do?dataType=json"; //데이터 가져올 url
+        Button settingBtn = (Button)findViewById(R.id.setting_btn);
 
         //하단 네비게이션 버튼
         BottomNavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener = menuItem -> {
@@ -84,7 +87,20 @@ public class MainActivity extends AppCompatActivity {
         adRecyclerView.setLayoutManager(layoutManager);
         //광고 리사이클러뷰 어뎁터
         AdListAdapter adListAdapter = new AdListAdapter(getBaseContext());
+        getDBData();//db에서 초기 값 가져오기
 
+        DBHandler = new Handler(Looper.myLooper()){
+            @Override
+            public void handleMessage(@NonNull Message msg) {
+                super.handleMessage(msg);
+                if(msg.what == 0){
+                    adListAdapter.setList(adList);
+                    adRecyclerView.setAdapter(adListAdapter);
+                }
+            }
+        };
+
+        //변화 감지해서 리스트 갱신
         //todo: 지금은 지원 사업 리스트 가져오지만 나중에 광고 리스트로 수정
         SupportViewModel supportViewModel = ViewModelProviders.of(this).get(SupportViewModel.class);
         supportViewModel.getAllList().observe(this, new Observer<List<SupportModel>>() {
@@ -139,8 +155,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //설정 버튼 클릭시
+        settingBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, SettingActivity.class));
+            }
+        });
 
         //데이터 동기화 타이머
+        /*
         timerHandler = new Handler(Looper.myLooper()){
             @Override
             public void handleMessage(@NonNull Message msg) {
@@ -172,6 +196,26 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
+
+         */
+
+    }
+
+    public void getDBData(){
+        AppDatabase db = Room.databaseBuilder(getBaseContext(),AppDatabase.class,"app_db").build();
+
+        Thread thread = new Thread(()->{
+            adList = db.supportDAO().Init();
+            Message message = new Message();
+            if(adList != null)
+                message.what = 0;
+            else
+                message.what = 1;
+
+            DBHandler.sendMessage(message);
+        });
+
+        thread.start();
 
     }
 

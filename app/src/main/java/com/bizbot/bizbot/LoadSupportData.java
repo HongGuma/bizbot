@@ -54,12 +54,14 @@ public class LoadSupportData{
             JSONArray jsonArray = json.getJSONArray("jsonArray");
 
             AppDatabase db = Room.databaseBuilder(context, AppDatabase.class,"app_db").build(); //db
+           // db.supportDAO().deleteAll();
 
             for(int i=0; i<jsonArray.length();i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
 
                 SupportModel s_list = new SupportModel();
 
+                s_list.setPblancId(jsonObject.optString("pblancId"));
                 s_list.setIndustNm(jsonObject.optString("industNm"));
                 s_list.setRceptInsttEmailAdres(jsonObject.optString("rceptInsttEmailAdres"));
                 s_list.setInqireCo(jsonObject.optInt("inqireCo"));
@@ -79,7 +81,6 @@ public class LoadSupportData{
                 s_list.setRceptInsttChargerNm(jsonObject.optString("rceptInsttChargerNm"));
                 s_list.setPblancNm(jsonObject.optString("pblancNm"));
                 s_list.setCreatPnttm(jsonObject.optString("creatPnttm"));
-                s_list.setPblancId(jsonObject.optString("pblancId"));
 
                 db.supportDAO().insert(s_list); //데이터 추가
             }

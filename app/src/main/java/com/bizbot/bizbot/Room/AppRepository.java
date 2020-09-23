@@ -1,4 +1,4 @@
-package com.bizbot.bizbot.Room.ViewModel;
+package com.bizbot.bizbot.Room;
 
 import android.app.Application;
 
@@ -15,26 +15,24 @@ import java.util.concurrent.Executors;
 /**
  * local에서 가져올지 network에서 가져올지 정함
  */
-public class SupportRepository  {
-    private SupportDAO mSupportDAO;
-    private LiveData<List<SupportModel>> mAllItem;
+public class AppRepository {
+    private SupportDAO mSupportDAO; //지원 사업 DAO
+    private LiveData<List<SupportModel>> allSupportItem; //
 
-    public SupportRepository(Application application){
+    public AppRepository(Application application){
         AppDatabase db = AppDatabase.getInstance(application);
         mSupportDAO = db.supportDAO(); //db에 있는 supportDAO 가져오기
-        mAllItem = mSupportDAO.getAll(); //DAO 쿼리문 이용
+        allSupportItem = mSupportDAO.getAll(); //지원 사업 아이템 전부 가져오기
     }
 
 
-    //모든 데이터 출력
-    public LiveData<List<SupportModel>> getAll(){
-        return mAllItem;
+    //지원사업 리스트 모든 리스트 출력
+    public LiveData<List<SupportModel>> getAllSupportItem(){
+        return allSupportItem;
     }
 
-    //타이틀 출력
-
-    //삽입
-    public void insert(SupportModel support){
+    //지원사업 데이터 추가
+    public void insertSupportItem(SupportModel support){
         Runnable addRun = () -> mSupportDAO.insert(support);
 
         Executor diskIO = Executors.newSingleThreadExecutor();

@@ -8,6 +8,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,11 +43,14 @@ public class Intro extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.intro);
 
-        TextView hi = (TextView)findViewById(R.id.intro_hi);
-        ProgressBar loading = (ProgressBar)findViewById(R.id.progressBar2);
+        LinearLayout logo = (LinearLayout)findViewById(R.id.intro_logo);
+        LinearLayout loading = (LinearLayout)findViewById(R.id.intro_loading);
 
         String baseURL = "http://www.bizinfo.go.kr/uss/rss/bizPersonaRss.do?dataType=json";
+        ClearDB();
+        Downloading(baseURL);
 
+        /*
         supportViewModel = ViewModelProviders.of(this).get(SupportViewModel.class);
         supportViewModel.getAllList().observe(this, new Observer<List<SupportModel>>() {
             @Override
@@ -57,13 +61,15 @@ public class Intro extends AppCompatActivity {
                 }
                 else{
                     loading.setVisibility(View.GONE);
-                    hi.setVisibility(View.VISIBLE);
+                    logo.setVisibility(View.VISIBLE);
                     startActivity(new Intent(Intro.this,MainActivity.class));
                     finish();
                     //Log.d(TAG, "startActivity");
                 }
             }
         });
+
+         */
 
 
         introHandler = new Handler(Looper.myLooper()){
@@ -72,8 +78,9 @@ public class Intro extends AppCompatActivity {
                 super.handleMessage(msg);
                 switch (msg.what){
                     case 0:
-                        hi.setVisibility(View.VISIBLE);
-                        Toast.makeText(getBaseContext(),"데이터 불러오기 성공!",Toast.LENGTH_SHORT).show();
+                        loading.setVisibility(View.GONE);
+                        logo.setVisibility(View.VISIBLE);
+                        Toast.makeText(getBaseContext(),"반갑습니다!",Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(Intro.this,MainActivity.class));
                         finish();
                         break;
@@ -92,6 +99,7 @@ public class Intro extends AppCompatActivity {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
+                //AppDatabase db = Room.databaseBuilder(getBaseContext(),AppDatabase.class,"app_db").build();
                 Message message = new Message();
 
                 LoadSupportData load = new LoadSupportData(url);
@@ -103,6 +111,14 @@ public class Intro extends AppCompatActivity {
 
         thread.start();
 
+    }
+
+    private void ClearDB(){
+        Thread thread = new Thread(()->{
+            AppDatabase db = Room.databaseBuilder(getBaseContext(),AppDatabase.class,"app_db").build();
+            db.supportDAO().deleteAll();
+        });
+        thread.start();
     }
 
 
