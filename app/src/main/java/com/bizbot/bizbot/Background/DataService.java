@@ -30,13 +30,14 @@ public class DataService extends Service {
             //파일 다운로드 같은 작업 수행
             try {
                 Thread.sleep(5000);
+                Log.d(TAG, "handleMessage: thread 실행중");
             } catch (InterruptedException e) {
                 // Restore interrupt status.
                 Thread.currentThread().interrupt();
             }
             // Stop the service using the startId, so that we don't stop
             // the service in the middle of handling another job
-            stopSelf(msg.arg1); //스스로 중지
+            Log.d(TAG, "handleMessage: Thread 종료");
         }
     }
 

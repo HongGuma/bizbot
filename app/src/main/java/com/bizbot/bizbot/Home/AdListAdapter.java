@@ -24,6 +24,7 @@ public class AdListAdapter extends RecyclerView.Adapter<AdListAdapter.ViewHolder
 
     private List<SupportModel> sList;
     private Context context;
+    private String area = null;
 
     public AdListAdapter(Context context){
         this.context = context;
@@ -51,7 +52,7 @@ public class AdListAdapter extends RecyclerView.Adapter<AdListAdapter.ViewHolder
             title = (TextView)view.findViewById(R.id.title);
             agency = (TextView)view.findViewById(R.id.agency);
             term = (TextView)view.findViewById(R.id.term);
-            likeBtn = (ToggleButton)view.findViewById(R.id.like);
+            likeBtn = (ToggleButton)view.findViewById(R.id.like_btn);
             keyWord = (RecyclerView)view.findViewById(R.id.keyword_rv);
         }
     }
@@ -74,7 +75,7 @@ public class AdListAdapter extends RecyclerView.Adapter<AdListAdapter.ViewHolder
         //키워드 리사이클러뷰 설정
         LinearLayoutManager layoutManager = new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false);
         holder.keyWord.setLayoutManager(layoutManager);
-        KeywordAdapter kwAdapter = new KeywordAdapter(SlicingWord(sList,position));
+        KeywordAdapter kwAdapter = new KeywordAdapter(context,SlicingWord(sList,position),area);
         holder.keyWord.setAdapter(kwAdapter);
     }
 

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -16,6 +17,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.room.Room;
 
+import com.bizbot.bizbot.Background.DataService;
 import com.bizbot.bizbot.Background.LoadSupportData;
 import com.bizbot.bizbot.Room.AppDatabase;
 import com.bizbot.bizbot.Room.Entity.SupportModel;
@@ -27,13 +29,13 @@ import java.util.List;
 
 public class Intro extends AppCompatActivity {
     private static final String TAG = "Intro";
+    private static final int REPEAT_DELAY = 15000;
 
     private SupportViewModel supportViewModel;
     Handler introHandler;
     Handler mHandler; //메인 핸들러
     Handler timerHandler; //타이머 핸들러
     ArrayList<String> list2 = new ArrayList<String>();
-
 
 
     @Override
@@ -44,13 +46,12 @@ public class Intro extends AppCompatActivity {
         LinearLayout logo = (LinearLayout)findViewById(R.id.intro_logo);
         LinearLayout loading = (LinearLayout)findViewById(R.id.intro_loading);
 
-        //디버깅용
-        //ClearDB();
-        //Downloading(baseURL);
-
+        /*디버깅용
+        ClearDB();
+        Downloading();
+           */
         //백그라운드
-        //Intent intent = new Intent(this, DataService.class);
-        //startService(intent);
+
 
 
         supportViewModel = ViewModelProviders.of(this).get(SupportViewModel.class);
@@ -72,6 +73,8 @@ public class Intro extends AppCompatActivity {
                 }
             }
         });
+
+
 
 
         //데이터 받는 스레드 핸들러
@@ -97,38 +100,19 @@ public class Intro extends AppCompatActivity {
             }
         };
 
-        //데이터 동기화 타이머 핸들러 REPEAT_DELAY 마다 해당 코드를 실행한다.
         /*
         timerHandler = new Handler(Looper.myLooper()){
             @Override
             public void handleMessage(@NonNull Message msg) {
                 super.handleMessage(msg);
                 Log.d(TAG, "handleMessage: 백그라운드 시작");
-                LoadDataAsync();
+                Intent backIntent = new Intent(Intro.this, DataService.class);
+                startService(backIntent);
+                stopService(backIntent);
                 this.sendEmptyMessageDelayed(0,REPEAT_DELAY);
             }
         };
         timerHandler.sendEmptyMessage(0);
-
-        //데이터 동기화 스레드 핸들러
-        mHandler = new Handler(Looper.myLooper()){
-            @Override
-            public void handleMessage(@NonNull Message msg) {
-                super.handleMessage(msg);
-                switch (msg.what){
-                    case THREAD_END: //스레드 정상 종료시
-                        Log.d(TAG, "handleMessage: 데이터 갱신 성공");
-                        break;
-                    case THREAD_ERROR: //스레드에서 에러 발생시
-                        Toast.makeText(MainActivity.this,"데이터 업로드에 실패하였습니다.",Toast.LENGTH_SHORT).show(); //디버깅용
-                        break;
-                    default:
-                        Toast.makeText(MainActivity.this,"오류가 발생했습니다.",Toast.LENGTH_SHORT).show(); //디버깅용
-                        //나중에 코드 채워 넣기
-                }
-
-            }
-        };
 
 
          */

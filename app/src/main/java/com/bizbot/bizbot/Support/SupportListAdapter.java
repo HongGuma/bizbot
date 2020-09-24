@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
@@ -47,7 +48,7 @@ public class SupportListAdapter extends RecyclerView.Adapter<SupportListAdapter.
             title = (TextView)view.findViewById(R.id.title);
             agency = (TextView)view.findViewById(R.id.agency);
             term = (TextView)view.findViewById(R.id.term);
-            likeBtn = (ToggleButton)view.findViewById(R.id.like);
+            likeBtn = (ToggleButton)view.findViewById(R.id.like_btn);
             keywordRV = (RecyclerView)view.findViewById(R.id.keyword_rv);
         }
     }
@@ -75,10 +76,24 @@ public class SupportListAdapter extends RecyclerView.Adapter<SupportListAdapter.
         holder.agency.setText(filterList.get(position).getJrsdInsttNm()); //접수기관명
         holder.term.setText(filterList.get(position).getReqstBeginEndDe()); //접수기간
 
+        //좋아요 버튼 클릭시
+        holder.likeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(holder.likeBtn.isChecked()){
+                    holder.likeBtn.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.heart));
+                    Toast.makeText(context,"관심사업에 등록되었습니다.",Toast.LENGTH_SHORT).show();
+                }else{
+                    holder.likeBtn.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.heart_empty));
+                    Toast.makeText(context,"관심사업이 해제되었습니다.",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         //키워드 리사이클러뷰 설정
         LinearLayoutManager layoutManager = new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false);
         holder.keywordRV.setLayoutManager(layoutManager);
-        kwAdapter = new KeywordAdapter(SlicingWord(filterList,position));
+        kwAdapter = new KeywordAdapter(context,SlicingWord(filterList,position),field);
         holder.keywordRV.setAdapter(kwAdapter);
 
     }
@@ -128,6 +143,7 @@ public class SupportListAdapter extends RecyclerView.Adapter<SupportListAdapter.
         }
 
         filterList = (List<SupportModel>) filtering;
+        notifyDataSetChanged();
     }
 
     /**

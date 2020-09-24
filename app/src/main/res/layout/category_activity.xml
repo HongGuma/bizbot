@@ -52,6 +52,8 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_marginLeft="21dp"
+        android:layout_marginRight="21dp"
         android:background="#C8C8C8"/>
 
     <LinearLayout
@@ -93,7 +95,7 @@
             android:text="적용하기"
             android:textColor="#000000"
             android:padding="12dp"
-            android:layout_margin="3dp"/>
+            android:layout_margin="23dp"/>
     </LinearLayout>
 
 

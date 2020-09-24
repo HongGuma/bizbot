@@ -36,6 +36,8 @@ public interface  SupportDAO {
     @Query("DELETE FROM SUPPORTS")
     void deleteAll();
 
+
+
     //디버깅용
     @Query("SELECT pblancId FROM SupportS")
     String getID();

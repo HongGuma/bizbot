@@ -19,7 +19,6 @@
         <activity android:name=".Home.Intro">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -28,6 +27,9 @@
         <activity android:name=".Setting.SettingActivity"/>
         <activity android:name=".Support.SupportActivity" />
         <activity android:name=".Support.CategoryActivity" />
+        <activity android:name=".FavouriteActivity"/>
+        <service android:name=".Background.DataService"
+            android:exported="false"/>
     </application>
 
 </manifest>

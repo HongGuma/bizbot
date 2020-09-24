@@ -14,16 +14,17 @@
         android:orientation="vertical">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50sp"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginRight="3dp"
             android:layout_marginLeft="4dp"
-            android:layout_marginTop="1dp">
+            android:layout_marginTop="1dp"
+            android:layout_marginBottom="2dp">
            <androidx.recyclerview.widget.RecyclerView
                android:id="@+id/keyword_rv"
                android:layout_width="wrap_content"
-               android:layout_height="match_parent"
+               android:layout_height="wrap_content"
                android:scrollbars="horizontal"/>
         </LinearLayout>
 
@@ -97,14 +98,14 @@
             </LinearLayout>
 
             <ToggleButton
-                android:id="@+id/like"
-                android:layout_width="14dp"
-                android:layout_height="14dp"
+                android:id="@+id/like_btn"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:background="@drawable/heart_empty"
                 android:textOff=""
                 android:textOn=""
                 android:layout_gravity="center_vertical"
-                android:layout_marginRight="11dp"
+                android:layout_marginRight="20dp"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>

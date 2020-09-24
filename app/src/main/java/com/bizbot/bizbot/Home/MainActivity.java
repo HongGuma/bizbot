@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.bizbot.bizbot.FavouriteActivity;
 import com.bizbot.bizbot.Room.AppDatabase;
 import com.bizbot.bizbot.Search.SearchActivity;
 import com.bizbot.bizbot.Setting.SettingActivity;
@@ -71,10 +72,13 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case R.id.support: //지원 사업 페이지로 이동
                     intent = new Intent(MainActivity.this, SupportActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    //intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(intent);
                     break;
                 case R.id.favourite: //관심 지원 사업 페이지로 이동
+                    intent = new Intent(MainActivity.this, FavouriteActivity.class);
+                    startActivity(intent);
+                    break;
                 case R.id.partner: //파트너 사업 페이지로 이동
             }
             return true;

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -67,7 +68,10 @@ public class CategoryActivity extends Activity {
         };
 
         //닫기 버튼 클릭시
-        closeBtn.setOnClickListener(view -> finish());
+        closeBtn.setOnClickListener(view -> {
+            startActivity(new Intent(CategoryActivity.this,SupportActivity.class));
+            finish();
+        });
 
         //ok 버튼 클릭시
         okBtn.setOnClickListener(view -> {

@@ -2,6 +2,7 @@ package com.bizbot.bizbot.Setting;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
@@ -16,7 +17,7 @@ public class SettingActivity extends AppCompatActivity {
         setContentView(R.layout.setting_activity);
 
         ImageView closeBtn = (ImageView)findViewById(R.id.close_btn);
-
+        CheckBox syncCheck = (CheckBox)findViewById(R.id.background_check_btn);
         
         closeBtn.setOnClickListener(new View.OnClickListener() {
             @Override

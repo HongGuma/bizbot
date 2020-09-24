@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,12 +37,8 @@ import java.util.List;
 
 public class SupportActivity extends AppCompatActivity {
     private static final String TAG = "SupportActivity";
-    public static final int THREAD_END = 0;
-    public static final int THREAD_ERROR = 1;
 
     private List<SupportModel> supportList;
-    ProgressBar asyncDialog;
-    Handler mHandler;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,6 +50,8 @@ public class SupportActivity extends AppCompatActivity {
         ImageButton categoryBtn = (ImageButton)findViewById(R.id.category_menu_btn); //카테고리 메뉴 버튼
         RecyclerView sRecyclerView = (RecyclerView)findViewById(R.id.support_rv); //지원사업 리스트 리사이클러뷰
         Spinner sortSpinner = (Spinner)findViewById(R.id.support_spinner); //정렬 선택 버튼
+        TextView areaState = (TextView)findViewById(R.id.area_state);//선택한 지역 표시
+        TextView fieldState = (TextView)findViewById(R.id.field_state);//선택한 분야 표시
         TextView SportCunt = (TextView)findViewById(R.id.support_list_count); //지원사업 건수
         TextView pop_up = (TextView)findViewById(R.id.new_pop_up); //새 게시물 팝업
         ProgressBar progressBar = (ProgressBar)findViewById(R.id.progressBar); //로딩 아이콘
@@ -60,29 +59,20 @@ public class SupportActivity extends AppCompatActivity {
         //카테고리에서 받아온 지역과 분야 키워드
         String areaWord = getIntent().getStringExtra("areaItem");
         String fieldWord = getIntent().getStringExtra("fieldItem");
+        if(areaWord == null)
+            areaState.setText("전체");
+        else
+            areaState.setText(areaWord);
+        if(fieldWord == null)
+            fieldState.setText("전체");
+        else
+            fieldState.setText(fieldWord);
 
         //지원 사업 리사이클러뷰
         sRecyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager =new LinearLayoutManager(SupportActivity.this);
         sRecyclerView.setLayoutManager(layoutManager);
         SupportListAdapter listAdapter = new SupportListAdapter(getBaseContext(),areaWord,fieldWord); //어뎁터 생성
-
-        /*
-        getDBData();//
-        mHandler = new Handler(Looper.myLooper()){
-            @Override
-            public void handleMessage(@NonNull Message msg) {
-                super.handleMessage(msg);
-                if(msg.what == 0){ //데이터 로드 성공
-                    progressBar.setVisibility(View.GONE); //로딩바 지우기
-                    listAdapter = new SupportListAdapter(getBaseContext(),supportList,areaWord,fieldWord); //어뎁터 생성
-                    SportCunt.setText("총 "+ listAdapter.ItemCount() +" 건");
-                }else //데이터 로드 실패
-                    Toast.makeText(SupportActivity.this,"데이터를 불러올 수 없습니다.",Toast.LENGTH_SHORT).show();
-            }
-        };
-
-         */
 
         //변화 감지해서 리스트 갱신
         SupportViewModel supportViewModel = ViewModelProviders.of(this).get(SupportViewModel.class);
@@ -99,20 +89,6 @@ public class SupportActivity extends AppCompatActivity {
                     SportCunt.setText("총 "+ listAdapter.getItemCount() +" 건");
 
                 }
-                /*
-                if(supportList.size() != supportModels.size()){
-                    pop_up.setVisibility(View.VISIBLE);
-                    pop_up.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            sRecyclerView.scrollToPosition(0);
-                            pop_up.setVisibility(View.GONE);
-                        }
-                    });
-                }
-
-                 */
-
 
             }
         });
@@ -142,6 +118,7 @@ public class SupportActivity extends AppCompatActivity {
         //카테고리 메뉴 버튼 클릭시
         categoryBtn.setOnClickListener(view -> {
             startActivity(new Intent(SupportActivity.this, CategoryActivity.class));
+            finish();
         });
 
     }
