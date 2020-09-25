@@ -29,6 +29,7 @@ public class SupportModel {
     String rceptInsttChargerNm;
     String pblancNm;
     String creatPnttm;
+    boolean checkLike;
 
     public String getPblancId() {
         return pblancId;
@@ -188,5 +189,13 @@ public class SupportModel {
 
     public void setCreatPnttm(String creatPnttm) {
         this.creatPnttm = creatPnttm;
+    }
+
+    public boolean isCheckLike() {
+        return checkLike;
+    }
+
+    public void setCheckLike(boolean checkLike) {
+        this.checkLike = checkLike;
     }
 }

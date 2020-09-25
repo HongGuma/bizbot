@@ -1,36 +1,28 @@
 package com.bizbot.bizbot.Home;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-import com.bizbot.bizbot.FavouriteActivity;
-import com.bizbot.bizbot.Room.AppDatabase;
+import com.bizbot.bizbot.Support.FavouriteActivity;
 import com.bizbot.bizbot.Search.SearchActivity;
 import com.bizbot.bizbot.Setting.SettingActivity;
 import com.bizbot.bizbot.Room.Entity.SupportModel;
-import com.bizbot.bizbot.Background.LoadSupportData;
 import com.bizbot.bizbot.R;
 import com.bizbot.bizbot.Room.ViewModel.SupportViewModel;
 import com.bizbot.bizbot.Support.SupportActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 

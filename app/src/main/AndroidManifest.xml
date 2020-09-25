@@ -27,7 +27,7 @@
         <activity android:name=".Setting.SettingActivity"/>
         <activity android:name=".Support.SupportActivity" />
         <activity android:name=".Support.CategoryActivity" />
-        <activity android:name=".FavouriteActivity"/>
+        <activity android:name=".Support.FavouriteActivity"/>
         <service android:name=".Background.DataService"
             android:exported="false"/>
     </application>

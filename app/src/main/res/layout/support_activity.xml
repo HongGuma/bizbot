@@ -97,6 +97,17 @@
         app:layout_constraintTop_toBottomOf="@id/line2"
         android:orientation="horizontal"
         android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/support_list_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:textColor="#000000"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="3dp"
+            android:text="총   건"/>
+
         <ImageView
             android:layout_width="27dp"
             android:layout_height="27dp"
@@ -111,33 +122,11 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="2dp"
             android:layout_marginTop="3dp"
+            android:layout_weight="1"
             android:text="서울"
             android:textColor="#000000"/>
 
-        <ImageView
-            android:layout_width="11dp"
-            android:layout_height="1dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="3dp"
-            android:background="#000000" />
 
-        <TextView
-            android:id="@+id/field_state"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="3dp"
-            android:text="분야"
-            android:textColor="#000000"/>
-        <TextView
-            android:id="@+id/support_list_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textColor="#000000"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="3dp"
-            android:text="총   건"/>
         <Spinner
             android:id="@+id/support_spinner"
             android:layout_width="wrap_content"

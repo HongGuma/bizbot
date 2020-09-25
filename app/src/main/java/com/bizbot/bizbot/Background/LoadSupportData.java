@@ -76,6 +76,7 @@ public class LoadSupportData{
                 s_list.setRceptInsttChargerNm(jsonObject.optString("rceptInsttChargerNm"));
                 s_list.setPblancNm(jsonObject.optString("pblancNm"));
                 s_list.setCreatPnttm(jsonObject.optString("creatPnttm"));
+                s_list.setCheckLike(false);
 
                 db.supportDAO().insert(s_list); //데이터 추가
             }

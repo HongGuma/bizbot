@@ -2,10 +2,6 @@ package com.bizbot.bizbot.Support;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -14,25 +10,18 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.ToggleButton;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 
 import com.bizbot.bizbot.R;
-import com.bizbot.bizbot.Room.AppDatabase;
 import com.bizbot.bizbot.Room.Entity.SupportModel;
 import com.bizbot.bizbot.Room.ViewModel.SupportViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SupportActivity extends AppCompatActivity {
@@ -51,7 +40,6 @@ public class SupportActivity extends AppCompatActivity {
         RecyclerView sRecyclerView = (RecyclerView)findViewById(R.id.support_rv); //지원사업 리스트 리사이클러뷰
         Spinner sortSpinner = (Spinner)findViewById(R.id.support_spinner); //정렬 선택 버튼
         TextView areaState = (TextView)findViewById(R.id.area_state);//선택한 지역 표시
-        TextView fieldState = (TextView)findViewById(R.id.field_state);//선택한 분야 표시
         TextView SportCunt = (TextView)findViewById(R.id.support_list_count); //지원사업 건수
         TextView pop_up = (TextView)findViewById(R.id.new_pop_up); //새 게시물 팝업
         ProgressBar progressBar = (ProgressBar)findViewById(R.id.progressBar); //로딩 아이콘
@@ -63,10 +51,6 @@ public class SupportActivity extends AppCompatActivity {
             areaState.setText("전체");
         else
             areaState.setText(areaWord);
-        if(fieldWord == null)
-            fieldState.setText("전체");
-        else
-            fieldState.setText(fieldWord);
 
         //지원 사업 리사이클러뷰
         sRecyclerView.setHasFixedSize(true);

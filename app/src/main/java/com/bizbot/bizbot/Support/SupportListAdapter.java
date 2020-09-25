@@ -11,8 +11,10 @@ import android.widget.ToggleButton;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import com.bizbot.bizbot.R;
+import com.bizbot.bizbot.Room.AppDatabase;
 import com.bizbot.bizbot.Room.Entity.SupportModel;
 
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ public class SupportListAdapter extends RecyclerView.Adapter<SupportListAdapter.
     private KeywordAdapter kwAdapter;
     private String area = null;
     private String field = null;
+    private boolean checkMark;
 
     public SupportListAdapter(Context context, String area, String field){
         this.context = context;
@@ -76,17 +79,26 @@ public class SupportListAdapter extends RecyclerView.Adapter<SupportListAdapter.
         holder.agency.setText(filterList.get(position).getJrsdInsttNm()); //접수기관명
         holder.term.setText(filterList.get(position).getReqstBeginEndDe()); //접수기간
 
+        if(filterList.get(position).isCheckLike())
+            holder.likeBtn.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.heart));
+        else
+            holder.likeBtn.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.heart_empty));
+
+
         //좋아요 버튼 클릭시
         holder.likeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(holder.likeBtn.isChecked()){
-                    holder.likeBtn.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.heart));
-                    Toast.makeText(context,"관심사업에 등록되었습니다.",Toast.LENGTH_SHORT).show();
-                }else{
+                if(filterList.get(position).isCheckLike()){
                     holder.likeBtn.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.heart_empty));
                     Toast.makeText(context,"관심사업이 해제되었습니다.",Toast.LENGTH_SHORT).show();
+                    DB_IO(false,filterList.get(position).getPblancId());
+                }else{
+                    holder.likeBtn.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.heart));
+                    Toast.makeText(context,"관심사업으로 등록되었습니다.",Toast.LENGTH_SHORT).show();
+                    DB_IO(true,filterList.get(position).getPblancId());
                 }
+
             }
         });
 
@@ -203,11 +215,24 @@ public class SupportListAdapter extends RecyclerView.Adapter<SupportListAdapter.
         }
     }
 
+    /**
+     * 리스트 갱신
+     * @param list : 새로운 아이템이 추가된 리스트
+     */
     public void setList(List<SupportModel> list){
         this.sList = list;
         this.filterList = list;
         notifyDataSetChanged();
 
         FilterItem(area,field);
+    }
+
+    public void DB_IO(boolean check,String id){
+        Thread thread = new Thread(()->{
+            AppDatabase db = Room.databaseBuilder(context,AppDatabase.class,"app_db").build();
+            db.supportDAO().updateLike(check,id);
+            db.close();
+        });
+        thread.start();
     }
 }

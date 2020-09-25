@@ -20,8 +20,8 @@ import com.bizbot.bizbot.R;
 public class CategoryActivity extends Activity {
     private static final String TAG = "CategoryActivity";
 
-    private String areaItem = "";
-    private String fieldItem = "";
+    private String areaItem = null;
+    private String fieldItem = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

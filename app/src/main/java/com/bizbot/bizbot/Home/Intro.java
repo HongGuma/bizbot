@@ -1,5 +1,6 @@
 package com.bizbot.bizbot.Home;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,6 +25,7 @@ import com.bizbot.bizbot.Room.Entity.SupportModel;
 import com.bizbot.bizbot.R;
 import com.bizbot.bizbot.Room.ViewModel.SupportViewModel;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,35 +48,22 @@ public class Intro extends AppCompatActivity {
         LinearLayout logo = (LinearLayout)findViewById(R.id.intro_logo);
         LinearLayout loading = (LinearLayout)findViewById(R.id.intro_loading);
 
-        /*디버깅용
-        ClearDB();
-        Downloading();
-           */
-        //백그라운드
+        //디버깅용========
+        //ClearDB();
+        //Downloading();
+        //================
 
+        File dbPath = getBaseContext().getDatabasePath("app_db");
+        //Log.d(TAG, "onCreate: dbPath="+dbPath+" : "+dbPath.exists());
 
-
-        supportViewModel = ViewModelProviders.of(this).get(SupportViewModel.class);
-        supportViewModel.getAllList().observe(this, new Observer<List<SupportModel>>() {
-            @Override
-            public void onChanged(List<SupportModel> supportModels) {
-                //데이터가 없다면 서버에서 데이터 받아온다.
-                if(supportModels == null){
-                    Downloading();
-                    //Log.d(TAG, "Downloading");
-                }
-                //데이터가 있다면 intro activity 종료후 main activity 실행
-                else{
-                    loading.setVisibility(View.GONE);
-                    logo.setVisibility(View.VISIBLE);
-                    startActivity(new Intent(Intro.this,MainActivity.class));
-                    finish();
-                    //Log.d(TAG, "startActivity");
-                }
-            }
-        });
-
-
+        if(dbPath.exists()){ //db 존재
+            loading.setVisibility(View.GONE);
+            logo.setVisibility(View.VISIBLE);
+            startActivity(new Intent(Intro.this,MainActivity.class));
+            finish();
+        }else{ //없음
+            Downloading();
+        }
 
 
         //데이터 받는 스레드 핸들러
@@ -118,6 +107,7 @@ public class Intro extends AppCompatActivity {
          */
     }
 
+
     //서버에서 데이터 다운
     private void Downloading(){
         String baseURL = "http://www.bizinfo.go.kr/uss/rss/bizPersonaRss.do?dataType=json";
@@ -134,7 +124,7 @@ public class Intro extends AppCompatActivity {
 
     }
 
-    //디비 삭제 디버깅용
+    //테이블 레코드 삭제 디버깅용
     private void ClearDB(){
         Thread thread = new Thread(()->{
             AppDatabase db = Room.databaseBuilder(getBaseContext(),AppDatabase.class,"app_db").build();

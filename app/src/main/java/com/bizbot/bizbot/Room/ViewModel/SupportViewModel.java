@@ -17,19 +17,23 @@ import java.util.List;
 public class SupportViewModel extends AndroidViewModel {
     private AppRepository mAppRepository;
     private LiveData<List<SupportModel>> mAllItem;
+    private LiveData<List<SupportModel>> mAllLiked;
 
 
     public SupportViewModel(@NonNull Application application) {
         super(application);
         mAppRepository = new AppRepository(application);
         mAllItem = mAppRepository.getAllSupportItem();
+        mAllLiked = mAppRepository.getAllLikedItem();
     }
 
     public LiveData<List<SupportModel>> getAllList(){
         return mAllItem;
     }
 
-
+    public LiveData<List<SupportModel>> getAllLiked() {
+        return mAllLiked;
+    }
 
     public void insert(SupportModel support){
         mAppRepository.insertSupportItem(support);

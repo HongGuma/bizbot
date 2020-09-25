@@ -36,7 +36,12 @@ public interface  SupportDAO {
     @Query("DELETE FROM SUPPORTS")
     void deleteAll();
 
+    //관심사업 체크
+    @Query("UPDATE Supports SET checkLike = :check WHERE pblancId = :id")
+    void updateLike(boolean check,String id);
 
+    @Query("SELECT * FROM SUPPORTS WHERE checkLike = 1")
+    LiveData<List<SupportModel>> getLikedList();
 
     //디버깅용
     @Query("SELECT pblancId FROM SupportS")
