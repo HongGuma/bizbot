@@ -1,6 +1,7 @@
 package com.bizbot.bizbot.Support;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,26 +80,29 @@ public class SupportListAdapter extends RecyclerView.Adapter<SupportListAdapter.
         holder.agency.setText(filterList.get(position).getJrsdInsttNm()); //접수기관명
         holder.term.setText(filterList.get(position).getReqstBeginEndDe()); //접수기간
 
-        if(filterList.get(position).isCheckLike())
-            holder.likeBtn.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.heart));
-        else
-            holder.likeBtn.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.heart_empty));
+        if(filterList.get(position).isCheckLike()) {
+            holder.likeBtn.setChecked(true);
+            holder.likeBtn.setBackgroundResource(R.drawable.heart);
+        }else {
+            holder.likeBtn.setChecked(false);
+            holder.likeBtn.setBackgroundResource(R.drawable.heart_empty);
+        }
+
 
 
         //좋아요 버튼 클릭시
         holder.likeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(filterList.get(position).isCheckLike()){
-                    holder.likeBtn.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.heart_empty));
-                    Toast.makeText(context,"관심사업이 해제되었습니다.",Toast.LENGTH_SHORT).show();
-                    DB_IO(false,filterList.get(position).getPblancId());
-                }else{
-                    holder.likeBtn.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.heart));
+                if(holder.likeBtn.isChecked()){
+                    holder.likeBtn.setBackgroundResource(R.drawable.heart);
                     Toast.makeText(context,"관심사업으로 등록되었습니다.",Toast.LENGTH_SHORT).show();
                     DB_IO(true,filterList.get(position).getPblancId());
+                }else{
+                    holder.likeBtn.setBackgroundResource(R.drawable.heart_empty);
+                    Toast.makeText(context,"관심사업이 해제되었습니다.",Toast.LENGTH_SHORT).show();
+                    DB_IO(false,filterList.get(position).getPblancId());
                 }
-
             }
         });
 

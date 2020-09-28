@@ -21,18 +21,16 @@ public class LoadSupportData{
 
     String url;
 
-    public LoadSupportData(String url){
-        this.url = url;
-    }
 
     /**
      * 서버에서 데이터 받는 함수
      */
     public int LoadData(Context context) {
         long start=0,end=0;
+        String baseURL = "http://www.bizinfo.go.kr/uss/rss/bizPersonaRss.do?dataType=json";
         try{
             start = System.currentTimeMillis();
-            RequestURLConnection requestURLConnection = new RequestURLConnection(url); //서버에 연결
+            RequestURLConnection requestURLConnection = new RequestURLConnection(baseURL); //서버에 연결
             String line = "";
 
             /*
