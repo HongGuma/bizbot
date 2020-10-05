@@ -14,9 +14,7 @@ import com.bizbot.bizbot.Room.DAO.SupportDAO;
 import com.bizbot.bizbot.Room.Entity.PermitModel;
 import com.bizbot.bizbot.Room.Entity.SupportModel;
 
-
-
-@Database(entities = {SupportModel.class, PermitModel.class},version=3)
+@Database(entities = {SupportModel.class, PermitModel.class},version=1,exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract SupportDAO supportDAO();
     public abstract PermitDAO permitDAO();

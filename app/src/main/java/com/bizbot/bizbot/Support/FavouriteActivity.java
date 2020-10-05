@@ -1,7 +1,6 @@
 package com.bizbot.bizbot.Support;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 
 import androidx.annotation.Nullable;
@@ -13,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bizbot.bizbot.R;
 import com.bizbot.bizbot.Room.Entity.SupportModel;
-import com.bizbot.bizbot.Room.ViewModel.SupportViewModel;
+import com.bizbot.bizbot.Room.AppViewModel;
 
 import java.util.List;
 
@@ -36,8 +35,8 @@ public class FavouriteActivity extends AppCompatActivity {
 
         SupportListAdapter likeAdapter = new SupportListAdapter(getBaseContext(),null,null);
 
-        SupportViewModel supportViewModel = ViewModelProviders.of(this).get(SupportViewModel.class);
-        supportViewModel.getAllLiked().observe(FavouriteActivity.this, new Observer<List<SupportModel>>() {
+        AppViewModel appViewModel = ViewModelProviders.of(this).get(AppViewModel.class);
+        appViewModel.getAllLiked().observe(FavouriteActivity.this, new Observer<List<SupportModel>>() {
             @Override
             public void onChanged(List<SupportModel> supportModels) {
                 likeAdapter.setList(supportModels);

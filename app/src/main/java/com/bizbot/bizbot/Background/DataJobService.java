@@ -15,6 +15,9 @@ public class DataJobService extends JobService {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
+                Log.d(TAG, "run: jobScheduler 테스트");
+                /*
+                Log.d(TAG, "run: 데이터 다운 시작");
                 LoadSupportData load = new LoadSupportData();
                 int result = load.LoadData(getBaseContext());
                 if(result == 0)
@@ -23,6 +26,8 @@ public class DataJobService extends JobService {
                     Log.d(TAG, "run: 데이터 다운 실패");
 
                 jobFinished(jobParameters,false);
+                
+                 */
             }
         });
         thread.start();
@@ -33,8 +38,7 @@ public class DataJobService extends JobService {
     //작업 종료시
     @Override
     public boolean onStopJob(JobParameters jobParameters) {
-
-
         return false; //true = 다시 실행, false = 다시 실행 안함
     }
+
 }

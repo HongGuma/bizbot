@@ -19,7 +19,7 @@ import com.bizbot.bizbot.Search.SearchActivity;
 import com.bizbot.bizbot.Setting.SettingActivity;
 import com.bizbot.bizbot.Room.Entity.SupportModel;
 import com.bizbot.bizbot.R;
-import com.bizbot.bizbot.Room.ViewModel.SupportViewModel;
+import com.bizbot.bizbot.Room.AppViewModel;
 import com.bizbot.bizbot.Support.SupportActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -87,8 +87,8 @@ public class MainActivity extends AppCompatActivity {
 
         //변화 감지해서 리스트 갱신
         //todo: 지금은 지원 사업 리스트 가져오지만 나중에 광고 리스트로 수정
-        SupportViewModel supportViewModel = ViewModelProviders.of(this).get(SupportViewModel.class);
-        supportViewModel.getAllList().observe(this, new Observer<List<SupportModel>>() {
+        AppViewModel appViewModel = ViewModelProviders.of(this).get(AppViewModel.class);
+        appViewModel.getAllList().observe(this, new Observer<List<SupportModel>>() {
             @Override
             public void onChanged(List<SupportModel> supportModels) {
                 //Log.d(TAG, "onChanged: supportModels="+supportModels.size());

@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bizbot.bizbot.R;
 import com.bizbot.bizbot.Room.Entity.SupportModel;
-import com.bizbot.bizbot.Room.ViewModel.SupportViewModel;
+import com.bizbot.bizbot.Room.AppViewModel;
 
 import java.util.List;
 
@@ -59,8 +59,8 @@ public class SupportActivity extends AppCompatActivity {
         SupportListAdapter listAdapter = new SupportListAdapter(getBaseContext(),areaWord,fieldWord); //어뎁터 생성
 
         //변화 감지해서 리스트 갱신
-        SupportViewModel supportViewModel = ViewModelProviders.of(this).get(SupportViewModel.class);
-        supportViewModel.getAllList().observe(SupportActivity.this, new Observer<List<SupportModel>>() {
+        AppViewModel appViewModel = ViewModelProviders.of(this).get(AppViewModel.class);
+        appViewModel.getAllList().observe(SupportActivity.this, new Observer<List<SupportModel>>() {
             @Override
             public void onChanged(List<SupportModel> supportModels) {
                 //Log.d(TAG, "onChanged: supportModels.size()="+supportModels.size());

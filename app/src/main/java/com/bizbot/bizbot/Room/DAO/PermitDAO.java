@@ -1,8 +1,10 @@
 package com.bizbot.bizbot.Room.DAO;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -10,7 +12,8 @@ import com.bizbot.bizbot.Room.Entity.PermitModel;
 
 @Dao
 public interface PermitDAO {
-    @Insert
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(PermitModel permit);
 
     @Update
@@ -19,10 +22,13 @@ public interface PermitDAO {
     @Delete
     void delete(PermitModel permit);
 
-    @Query("UPDATE PERMIT SET Background = :check ")
-    void checkBackGround(boolean check);
+    @Query("UPDATE Permit SET Alert = :check")
+    void setAlert(boolean check);
 
-    @Query("UPDATE Permit SET FirstAccess = :check")
-    void checkFirstAccess(boolean check);
+    @Query("SELECT * FROM Permit WHERE id=1")
+    LiveData<PermitModel> getAlertState();
+
+    @Query("SELECT * FROM Permit WHERE id=1")
+    boolean isAlertCheck();
 
 }
