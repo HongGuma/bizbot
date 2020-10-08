@@ -43,6 +43,9 @@ import com.bizbot.bizbot.Room.AppViewModel;
 import com.bizbot.bizbot.Setting.SettingActivity;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -97,13 +100,11 @@ public class Intro extends AppCompatActivity {
 
             BackgroundLoadData();
 
-            //Intent backIntent = new Intent(Intro.this, DataService.class);
-            //startService(backIntent);
-
             loading.setVisibility(View.GONE);
             logo.setVisibility(View.VISIBLE);
             startActivity(new Intent(Intro.this, MainActivity.class));
             finish();
+
         }else if(dbPath.exists() && !checkData()){
             //db는 있는데 데이터가 없는 사용자
             Downloading();
@@ -125,8 +126,6 @@ public class Intro extends AppCompatActivity {
                     case 1:
                         //todo: 데이터 로드 에러 발생시 작업, 수정
                         Toast.makeText(getBaseContext(),"에러 발생!",Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(Intro.this,MainActivity.class));
-                        finish();
                         break;
 
                 }
@@ -190,8 +189,8 @@ public class Intro extends AppCompatActivity {
             @Override
             public void run() {
                 Message message = new Message();
-                LoadSupportData load = new LoadSupportData();
-                message.what = load.LoadData(getBaseContext());
+                LoadSupportData load = new LoadSupportData(getBaseContext());
+                message.what = load.LoadData();
                 introHandler.sendMessage(message);
             }
         });
@@ -231,6 +230,13 @@ public class Intro extends AppCompatActivity {
 
         PermitModel permitModel = new PermitModel();
 
+        //첫 동기화 시간
+        Date syncDate = new Date(System.currentTimeMillis());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String syncTime = simpleDateFormat.format(syncDate);
+
+        permitModel.setSyncTime(syncTime);
+
         yesBtn.setOnClickListener(view -> {
             permitModel.setAlert(true);
             DB_IO(permitModel);
@@ -245,26 +251,24 @@ public class Intro extends AppCompatActivity {
 
     }
 
+    //백그라운드 동기화
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void BackgroundLoadData(){
         Thread thread = new Thread(()->{
             db = Room.databaseBuilder(Intro.this,AppDatabase.class,"app_db").build();
             boolean check = db.permitDAO().isAlertCheck();
             JobScheduler jobScheduler = (JobScheduler) getBaseContext().getSystemService(Context.JOB_SCHEDULER_SERVICE);
-            JobInfo jobInfo;
-            if(check){
-                jobInfo = new JobInfo.Builder(JOB_ID_UPDATE,new ComponentName(this, DataJobService.class))
-                        .setRequiresStorageNotLow(true) //충분한 저장공간
-                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY) //네트워크 타입
-                        .setPeriodic(TimeUnit.MINUTES.toMillis(15))//30분마다 실행
-                        .build();
-            }else{
-                jobInfo = new JobInfo.Builder(JOB_ID_UPDATE,new ComponentName(this, DataJobService.class))
-                        .setRequiresStorageNotLow(true) //충분한 저장공간
-                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY) //네트워크 타입
-                        .build();
-            }
+            JobInfo jobInfo = new JobInfo.Builder(JOB_ID_UPDATE,new ComponentName(this, DataJobService.class))
+                    .setRequiresStorageNotLow(true) //충분한 저장공간
+                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY) //네트워크 타입
+                    .setPeriodic(TimeUnit.MINUTES.toMillis(30))//30분마다 실행
+                    .setTriggerContentMaxDelay(TimeUnit.MINUTES.toMillis(3))//3분후 실행 (중복 실행 방지)
+                    .build();
             jobScheduler.schedule(jobInfo);
+
+            if(!check) //1회만 실행
+                jobScheduler.cancel(jobInfo.getId());
+
         });
         thread.start();
     }

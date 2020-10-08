@@ -30,6 +30,7 @@ public class SupportModel {
     String pblancNm;
     String creatPnttm;
     boolean checkLike;
+    boolean checkNew;
 
     public String getPblancId() {
         return pblancId;
@@ -197,5 +198,13 @@ public class SupportModel {
 
     public void setCheckLike(boolean checkLike) {
         this.checkLike = checkLike;
+    }
+
+    public boolean isCheckNew() {
+        return checkNew;
+    }
+
+    public void setCheckNew(boolean checkNew) {
+        this.checkNew = checkNew;
     }
 }

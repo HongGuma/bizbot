@@ -15,22 +15,18 @@ import java.util.List;
 
 @Dao
 public interface  SupportDAO {
-    @Insert(onConflict = OnConflictStrategy.REPLACE) //중복 id일 경우 덮어쓴다.
+    @Insert(onConflict = OnConflictStrategy.IGNORE) //중복 id일 경우 기존값
     void insert(SupportModel supports);
 
     @Delete
     void delete(SupportModel supports);
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE) //중복 id일 경우 덮어쓴다.
     void update(SupportModel supports);
 
     //모든 데이터 출력
     @Query("SELECT * FROM Supports")
     LiveData<List<SupportModel>> getAll();
-
-    //모든 데이터 출력 (live data 아님 한번만 사용)
-    @Query("SELECT * FROM SUPPORTS")
-    List<SupportModel> Init();
 
     //모든 데이터 삭제
     @Query("DELETE FROM SUPPORTS")

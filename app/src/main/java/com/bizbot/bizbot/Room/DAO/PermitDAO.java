@@ -25,10 +25,17 @@ public interface PermitDAO {
     @Query("UPDATE Permit SET Alert = :check")
     void setAlert(boolean check);
 
+    @Query("UPDATE Permit SET SyncTime = :time")
+    void setSyncTime(String time);
+
     @Query("SELECT * FROM Permit WHERE id=1")
     LiveData<PermitModel> getAlertState();
 
     @Query("SELECT * FROM Permit WHERE id=1")
     boolean isAlertCheck();
+
+    @Query("SELECT * FROM Permit")
+    PermitModel getAll();
+
 
 }

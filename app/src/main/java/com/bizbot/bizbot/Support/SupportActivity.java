@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bizbot.bizbot.Home.MainActivity;
 import com.bizbot.bizbot.R;
 import com.bizbot.bizbot.Room.Entity.SupportModel;
 import com.bizbot.bizbot.Room.AppViewModel;
@@ -97,8 +98,8 @@ public class SupportActivity extends AppCompatActivity {
 
         //닫기 버튼 클릭시
         closeBtn.setOnClickListener(view -> {
+            startActivity(new Intent(this, MainActivity.class));
             finish();
-            overridePendingTransition(0,0); //에니메이션 제거
         });
 
         //카테고리 메뉴 버튼 클릭시
@@ -116,6 +117,7 @@ public class SupportActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        startActivity(new Intent(this, MainActivity.class));
         finish();
     }
 }
