@@ -1,6 +1,5 @@
 package com.bizbot.bizbot.Background;
 
-
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -25,42 +24,32 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
-
-public class LoadSupportData{
-    private static final String TAG = "LoadSupportData";
+public class SynchronizationData{
+    private static final String TAG = "SynchronizationData";
     public static final String CHANNEL_ID = "107";
     public static final int THREAD_END = 0;
     public static final int THREAD_ERROR = 1;
 
-    String url;
     Context context;
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA);
 
-    public LoadSupportData(Context context){
+    public SynchronizationData(Context context){
         this.context = context;
     }
-
 
     /**
      * 서버에서 데이터 받는 함수
      */
-    public int LoadData() {
+    public int SyncData() {
         long start=0,end=0;
         String baseURL = "http://www.bizinfo.go.kr/uss/rss/bizPersonaRss.do?dataType=json";
         try{
             start = System.currentTimeMillis();
             RequestURLConnection requestURLConnection = new RequestURLConnection(baseURL); //서버에 연결
             String line = "";
-
-            /* 디버깅용 : json파일 읽어오기
-            InputStream is = getAssets().open("data.json");
-            InputStreamReader ir = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(ir);
-
-            line = br.readLine();
-            */
 
             line = requestURLConnection.DataLoad();
 
@@ -70,6 +59,11 @@ public class LoadSupportData{
             AppDatabase db = Room.databaseBuilder(context, AppDatabase.class,"app_db").build(); //db
             PermitModel permit = db.permitDAO().getAll();
             Date sync = simpleDateFormat.parse(permit.getSyncTime());
+
+            int n =0;
+            List<String> IDs = db.supportDAO().getID();
+
+            InitData initData = new InitData(context);
 
             for(int i=0; i<jsonArray.length();i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -98,19 +92,24 @@ public class LoadSupportData{
                 s_list.setCreatPnttm(jsonObject.optString("creatPnttm"));
                 s_list.setCheckLike(false);
 
-                //새글 체크
+                //새로 생성된지 2일 이하면 새글
                 Date create = simpleDateFormat.parse(s_list.getCreatPnttm());
-                //Log.d(TAG, "LoadData: sync-create = "+(sync.getTime()-create.getTime()));
-
-                assert sync != null;
-                if(sync.compareTo(create) < 0){
+                long differentTime = sync.getTime() - create.getTime();
+                long differentDay = differentTime/(24*60*60*1000);
+                if(differentDay <= 2)
                     s_list.setCheckNew(true);
-                    if(db.permitDAO().isAlertCheck())
-                        NotificationNewSupport(i,s_list.getCreatPnttm(),s_list.getPblancNm()); //새글 알람
-                }else
+                else
                     s_list.setCheckNew(false);
 
-                db.supportDAO().insert(s_list); //데이터 추가
+                if(IDs.get(n).equals(s_list.getPblancId())){
+                    db.supportDAO().update(s_list); //데이터 업데이트
+                    n++;
+                }
+                else{
+                    db.supportDAO().insert(s_list); //데이터 추가
+                    if(db.permitDAO().isAlertCheck() && sync.compareTo(create) < 0)
+                        NotificationNewSupport(i,s_list.getCreatPnttm(),s_list.getPblancNm()); //새글 알림
+                }
 
             }
             end = System.currentTimeMillis();

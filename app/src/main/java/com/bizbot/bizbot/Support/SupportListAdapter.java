@@ -13,12 +13,14 @@ import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 import com.bizbot.bizbot.R;
 import com.bizbot.bizbot.Room.AppDatabase;
+import com.bizbot.bizbot.Room.AppViewModel;
 import com.bizbot.bizbot.Room.Entity.SupportModel;
 
 import java.util.ArrayList;
@@ -35,7 +37,6 @@ public class SupportListAdapter extends RecyclerView.Adapter<SupportListAdapter.
     private KeywordAdapter kwAdapter;
     private String area = null;
     private String field = null;
-    private boolean checkMark;
 
     public SupportListAdapter(Context context, String area, String field){
         this.context = context;
@@ -47,6 +48,7 @@ public class SupportListAdapter extends RecyclerView.Adapter<SupportListAdapter.
         TextView title;
         TextView agency;
         TextView term;
+        TextView newIcon;
         ToggleButton likeBtn;
         RecyclerView keywordRV;
         ConstraintLayout layout;
@@ -56,6 +58,7 @@ public class SupportListAdapter extends RecyclerView.Adapter<SupportListAdapter.
             title = (TextView)view.findViewById(R.id.title);
             agency = (TextView)view.findViewById(R.id.agency);
             term = (TextView)view.findViewById(R.id.term);
+            newIcon = (TextView)view.findViewById(R.id.new_icon);
             likeBtn = (ToggleButton)view.findViewById(R.id.like_btn);
             keywordRV = (RecyclerView)view.findViewById(R.id.keyword_rv);
             layout = (ConstraintLayout)view.findViewById(R.id.support_item_layout);
@@ -84,6 +87,12 @@ public class SupportListAdapter extends RecyclerView.Adapter<SupportListAdapter.
         holder.title.setText(filterList.get(position).getPblancNm()); //지원 사업 제목
         holder.agency.setText(filterList.get(position).getJrsdInsttNm()); //접수기관명
         holder.term.setText(filterList.get(position).getReqstBeginEndDe()); //접수기간
+
+        //새글 알림
+        if(filterList.get(position).isCheckNew())
+            holder.newIcon.setVisibility(View.VISIBLE);
+        else
+            holder.newIcon.setVisibility(View.GONE);
 
         if(filterList.get(position).isCheckLike()) {
             holder.likeBtn.setChecked(true);
@@ -196,7 +205,7 @@ public class SupportListAdapter extends RecyclerView.Adapter<SupportListAdapter.
         switch (i) {
             case 1: //최신순 정렬
                 Comparator<SupportModel> newest = (item1, item2) -> {
-                    int result = item1.getCreatPnttm().compareTo(item2.getCreatPnttm());
+                    int result = item2.getCreatPnttm().compareTo(item1.getCreatPnttm());
                     return result;
                 };
                 Collections.sort(filterList,newest);

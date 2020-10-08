@@ -22,7 +22,23 @@
             android:layout_marginLeft="4dp"
             android:layout_marginTop="1dp"
             android:layout_marginBottom="2dp">
-           <androidx.recyclerview.widget.RecyclerView
+            <TextView
+                android:id="@+id/new_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="NEW"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                android:textColor="#000000"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/item_keyword_select_style"
+                android:visibility="visible" />
+            <androidx.recyclerview.widget.RecyclerView
                android:id="@+id/keyword_rv"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
@@ -32,29 +48,21 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical">
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical">
             <TextView
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="제목"
                 android:textColor="#000000"
                 android:textStyle="bold"
                 android:textSize="20sp"
                 android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
                 android:layout_marginTop="3dp"
-                android:layout_marginBottom="2dp"/>
-            <TextView
-                android:id="@+id/new_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="NEW"
-                android:textSize="12dp"
-                android:textStyle="bold"
-                android:textColor="#ffffff"
-                android:paddingRight="4dp"
-                android:paddingLeft="4dp"
-                android:background="@drawable/item_keyword_select_style"
-                android:visibility="gone"/>
+                android:layout_marginBottom="2dp"
+                android:layout_weight="1"/>
         </LinearLayout>
 
 

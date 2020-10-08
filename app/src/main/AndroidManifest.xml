@@ -20,7 +20,8 @@
         android:theme="@style/Theme.AppCompat.NoActionBar"
         android:usesCleartextTraffic="true"
         android:hardwareAccelerated="false"
-        android:largeHeap="true">
+        android:largeHeap="true"
+        tools:targetApi="m">
         <activity android:name=".Home.Intro">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -39,10 +39,12 @@ public interface  SupportDAO {
     @Query("SELECT * FROM SUPPORTS WHERE checkLike = 1")
     LiveData<List<SupportModel>> getLikedList();
 
-    //디버깅용
+    //id 출력
     @Query("SELECT pblancId FROM SupportS")
-    String getID();
+    List<String> getID();
 
+    @Query("UPDATE Supports SET checkNew = :check WHERE pblancId = :id")
+    void updateNew(boolean check,String id);
 
 }
 

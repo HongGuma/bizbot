@@ -2,7 +2,6 @@ package com.bizbot.bizbot.Background;
 
 import android.app.job.JobParameters;
 import android.app.job.JobService;
-import android.os.Message;
 import android.util.Log;
 
 public class DataJobService extends JobService {
@@ -16,8 +15,9 @@ public class DataJobService extends JobService {
             @Override
             public void run() {
                 Log.d(TAG, "run: 데이터 다운 시작");
-                LoadSupportData load = new LoadSupportData(getBaseContext());
-                int result = load.LoadData();
+                
+                SynchronizationData syncData = new SynchronizationData(getBaseContext());
+                int result = syncData.SyncData();;
                 if(result == 0)
                     Log.d(TAG, "run: 데이터 다운 완료");
                 else

@@ -31,7 +31,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.room.Room;
 
 import com.bizbot.bizbot.Background.DataJobService;
-import com.bizbot.bizbot.Background.LoadSupportData;
+import com.bizbot.bizbot.Background.InitData;
 import com.bizbot.bizbot.Room.AppDatabase;
 import com.bizbot.bizbot.R;
 import com.bizbot.bizbot.Room.Entity.PermitModel;
@@ -185,7 +185,7 @@ public class Intro extends AppCompatActivity {
             @Override
             public void run() {
                 Message message = new Message();
-                LoadSupportData load = new LoadSupportData(getBaseContext());
+                InitData load = new InitData(getBaseContext());
                 message.what = load.LoadData();
                 introHandler.sendMessage(message);
             }
