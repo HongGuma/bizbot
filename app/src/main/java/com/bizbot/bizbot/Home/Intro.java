@@ -15,7 +15,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -27,26 +26,23 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.room.Room;
 
 import com.bizbot.bizbot.Background.DataJobService;
-import com.bizbot.bizbot.Background.DataService;
 import com.bizbot.bizbot.Background.LoadSupportData;
 import com.bizbot.bizbot.Room.AppDatabase;
 import com.bizbot.bizbot.R;
 import com.bizbot.bizbot.Room.Entity.PermitModel;
 import com.bizbot.bizbot.Room.Entity.SupportModel;
 import com.bizbot.bizbot.Room.AppViewModel;
-import com.bizbot.bizbot.Setting.SettingActivity;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class Intro extends AppCompatActivity {
@@ -232,7 +228,7 @@ public class Intro extends AppCompatActivity {
 
         //첫 동기화 시간
         Date syncDate = new Date(System.currentTimeMillis());
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA);
         String syncTime = simpleDateFormat.format(syncDate);
 
         permitModel.setSyncTime(syncTime);

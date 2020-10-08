@@ -1,6 +1,8 @@
 package com.bizbot.bizbot.Support;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +12,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
@@ -46,6 +49,7 @@ public class SupportListAdapter extends RecyclerView.Adapter<SupportListAdapter.
         TextView term;
         ToggleButton likeBtn;
         RecyclerView keywordRV;
+        ConstraintLayout layout;
 
         ViewHolder(View view){
             super(view);
@@ -54,6 +58,7 @@ public class SupportListAdapter extends RecyclerView.Adapter<SupportListAdapter.
             term = (TextView)view.findViewById(R.id.term);
             likeBtn = (ToggleButton)view.findViewById(R.id.like_btn);
             keywordRV = (RecyclerView)view.findViewById(R.id.keyword_rv);
+            layout = (ConstraintLayout)view.findViewById(R.id.support_item_layout);
         }
     }
 
@@ -88,8 +93,6 @@ public class SupportListAdapter extends RecyclerView.Adapter<SupportListAdapter.
             holder.likeBtn.setBackgroundResource(R.drawable.heart_empty);
         }
 
-
-
         //좋아요 버튼 클릭시
         holder.likeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,6 +115,20 @@ public class SupportListAdapter extends RecyclerView.Adapter<SupportListAdapter.
         kwAdapter = new KeywordAdapter(context,SlicingWord(filterList,position),field);
         holder.keywordRV.setAdapter(kwAdapter);
 
+        //레이아웃 클릭시
+        holder.layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SupportModel supportModel = filterList.get(position);
+                Intent intent = new Intent(view.getContext(),SupportDetail.class);
+                intent.putExtra("detail",supportModel);
+                intent.putExtra("areaWord",SlicingWord(filterList,position));
+                intent.putExtra("fieldWord",field);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            }
+        });
+
     }
 
 
@@ -123,7 +140,7 @@ public class SupportListAdapter extends RecyclerView.Adapter<SupportListAdapter.
      */
     public String[] SlicingWord(List<SupportModel>list, int position){
         String[] arr1 = list.get(position).getPldirSportRealmLclasCodeNm().split("@"); //분야
-        String[] arr2 = list.get(position).getPldirSportRealmMlsfcCodeNm().split("@"); //
+        String[] arr2 = list.get(position).getPldirSportRealmMlsfcCodeNm().split("@"); //내수@수출 같은거..
         String[] wordList = new String[arr1.length+arr2.length];
         System.arraycopy(arr1,0,wordList,0,arr1.length);
         System.arraycopy(arr2,0,wordList,arr1.length,arr2.length);

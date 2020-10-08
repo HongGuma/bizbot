@@ -1,11 +1,15 @@
 package com.bizbot.bizbot.Room.Entity;
 
+import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
+
 @Entity(tableName = "Supports")
-public class SupportModel {
+public class SupportModel implements Serializable {
 
     @NonNull
     @PrimaryKey

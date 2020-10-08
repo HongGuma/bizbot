@@ -25,6 +25,7 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 
 public class LoadSupportData{
@@ -35,7 +36,7 @@ public class LoadSupportData{
 
     String url;
     Context context;
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA);
 
     public LoadSupportData(Context context){
         this.context = context;
@@ -87,7 +88,7 @@ public class LoadSupportData{
                 s_list.setPldirSportRealmLclasCodeNm(jsonObject.optString("pldirSportRealmLclasCodeNm"));
                 s_list.setTrgetNm(jsonObject.optString("trgetNm"));
                 s_list.setRceptInsttTelno(jsonObject.optString("rceptInsttTelno"));
-                s_list.setBsnsSumryCn(jsonObject.optString("bsnsSumryCn0px"));
+                s_list.setBsnsSumryCn(jsonObject.optString("bsnsSumryCn"));
                 s_list.setReqstBeginEndDe(jsonObject.optString("reqstBeginEndDe"));
                 s_list.setAreaNm(jsonObject.optString("areaNm"));
                 s_list.setPldirSportRealmMlsfcCodeNm(jsonObject.optString("pldirSportRealmMlsfcCodeNm"));
@@ -97,15 +98,15 @@ public class LoadSupportData{
                 s_list.setCreatPnttm(jsonObject.optString("creatPnttm"));
                 s_list.setCheckLike(false);
 
-
                 //새글 체크
                 Date create = simpleDateFormat.parse(s_list.getCreatPnttm());
-                Log.d(TAG, "LoadData: sync-create = "+(sync.getTime()-create.getTime()));
+                //Log.d(TAG, "LoadData: sync-create = "+(sync.getTime()-create.getTime()));
+
                 assert sync != null;
-                if(sync.compareTo(create) > 0){
+                if(sync.compareTo(create) < 0){
                     s_list.setCheckNew(true);
-                    //if(db.permitDAO().isAlertCheck())
-                        //NotificationNewSupport(i,s_list.getCreatPnttm(),s_list.getPblancNm()); //새글 알람
+                    if(db.permitDAO().isAlertCheck())
+                        NotificationNewSupport(i,s_list.getCreatPnttm(),s_list.getPblancNm()); //새글 알람
                 }else
                     s_list.setCheckNew(false);
 
