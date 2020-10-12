@@ -88,19 +88,27 @@ public class SupportDetail extends AppCompatActivity {
     }
 
     public void SliceContents(String str,TextView textView){
-        String[] arr1 = str.split("<br />&nbsp;<br />");
-
+        String[] arr1 = str.split("<br />");
         String line1 = "";
         for(String word : arr1)
             line1 += word + "\n";
 
         String[] arr2 = line1.split("&nbsp;");
         String line2 = "";
-
         for(String word : arr2)
             line2 += word + " ";
 
-        textView.setText(line2);
+        String[] arr3 = line2.split("<p style=\\\"margin: 0px\\\">");
+        String line3 = "";
+        for(String word : arr3)
+            line3 += word + " ";
+
+        String[] arr4 = line3.split("</p>");
+        String line4 = "";
+        for(String word: arr4)
+            line4 += word + " ";
+
+        textView.setText(line4);
 
     }
 

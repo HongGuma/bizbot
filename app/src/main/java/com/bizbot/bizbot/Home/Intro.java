@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -32,6 +33,7 @@ import androidx.room.Room;
 
 import com.bizbot.bizbot.Background.DataJobService;
 import com.bizbot.bizbot.Background.InitData;
+import com.bizbot.bizbot.Background.SynchronizationData;
 import com.bizbot.bizbot.Room.AppDatabase;
 import com.bizbot.bizbot.R;
 import com.bizbot.bizbot.Room.Entity.PermitModel;
@@ -258,12 +260,21 @@ public class Intro extends AppCompatActivity {
                     .setRequiresStorageNotLow(true) //충분한 저장공간
                     .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY) //네트워크 타입
                     .setPeriodic(TimeUnit.MINUTES.toMillis(30))//30분마다 실행
-                    .setTriggerContentMaxDelay(TimeUnit.MINUTES.toMillis(3))//3분후 실행 (중복 실행 방지)
+                    //.setTriggerContentMaxDelay(TimeUnit.MINUTES.toMillis(3))//3분후 실행
                     .build();
-            jobScheduler.schedule(jobInfo);
 
-            if(!check) //1회만 실행
-                jobScheduler.cancel(jobInfo.getId());
+            if(!check){//1회만 실행
+                jobScheduler.cancel(jobInfo.getId()); //기존의 반복 백그라운드 중지
+                Log.d(TAG, "run: 데이터 다운 완료");
+                SynchronizationData sync = new SynchronizationData(this);
+                int result = sync.SyncData();
+                if(result == 0)
+                    Log.d(TAG, "run: 데이터 다운 완료");
+                else
+                    Log.d(TAG, "run: 데이터 다운 실패");
+            }else{
+                jobScheduler.schedule(jobInfo);
+            }
 
         });
         thread.start();

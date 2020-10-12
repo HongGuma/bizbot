@@ -45,9 +45,6 @@ public class SettingActivity extends AppCompatActivity {
         ImageView closeBtn = (ImageView)findViewById(R.id.close_btn);
         SwitchCompat alertSwitch = (SwitchCompat)findViewById(R.id.alert_check);
 
-
-
-
         AppViewModel viewModel = ViewModelProviders.of(this).get(AppViewModel.class);
         viewModel.getAlert().observe(this, new Observer<PermitModel>() {
             @Override
@@ -61,6 +58,7 @@ public class SettingActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 DB_UPDATE(b);
+
             }
         });
 

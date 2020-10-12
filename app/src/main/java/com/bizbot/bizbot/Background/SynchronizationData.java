@@ -63,8 +63,6 @@ public class SynchronizationData{
             int n =0;
             List<String> IDs = db.supportDAO().getID();
 
-            InitData initData = new InitData(context);
-
             for(int i=0; i<jsonArray.length();i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
 
@@ -96,10 +94,14 @@ public class SynchronizationData{
                 Date create = simpleDateFormat.parse(s_list.getCreatPnttm());
                 long differentTime = sync.getTime() - create.getTime();
                 long differentDay = differentTime/(24*60*60*1000);
-                if(differentDay <= 2)
+                if(differentDay <= 2){
                     s_list.setCheckNew(true);
-                else
+                    db.supportDAO().updateNew(true,s_list.getPblancId());
+                }
+                else{
                     s_list.setCheckNew(false);
+                    db.supportDAO().updateNew(false,s_list.getPblancId());
+                }
 
                 if(IDs.get(n).equals(s_list.getPblancId())){
                     db.supportDAO().update(s_list); //데이터 업데이트

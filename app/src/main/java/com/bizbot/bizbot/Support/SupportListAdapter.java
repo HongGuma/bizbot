@@ -1,26 +1,24 @@
 package com.bizbot.bizbot.Support;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 import com.bizbot.bizbot.R;
 import com.bizbot.bizbot.Room.AppDatabase;
-import com.bizbot.bizbot.Room.AppViewModel;
 import com.bizbot.bizbot.Room.Entity.SupportModel;
 
 import java.util.ArrayList;
@@ -158,11 +156,11 @@ public class SupportListAdapter extends RecyclerView.Adapter<SupportListAdapter.
     }
 
     /**
-     * 아이템 필터
+     * 카테고리 필터
      * @param area : 카테고리 엑티비티에서 선택한 지역 영역
      * @param field : 카테고리 엑티비티에서 선택한 분야 영역
      */
-    public void FilterItem(String area, String field){
+    public void CategoryFilter(String area, String field){
         List<SupportModel> filtering = new ArrayList<SupportModel>();
 
         if(area != null && field == null){ //지역 o, 분야 x
@@ -254,9 +252,47 @@ public class SupportListAdapter extends RecyclerView.Adapter<SupportListAdapter.
         this.filterList = list;
         notifyDataSetChanged();
 
-        FilterItem(area,field);
+        CategoryFilter(area,field);
     }
 
+    /**
+     * 검색 필터
+     * @return : 검색된 데이터랑 일치하는 아이템 출력
+     */
+    public Filter getFilter(){
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                String charString = constraint.toString();
+                if(!charString.isEmpty()){ //입력받은게 있다면
+                    ArrayList<SupportModel> filtering = new ArrayList<SupportModel>();
+                    for(SupportModel item: sList){
+                        //세부 내용으로 검색
+                        if(item.getBsnsSumryCn().toLowerCase().contains(charString.toLowerCase()))
+                            filtering.add(item); //전체 데이터 중에서 입력받은 데이터만 추가
+                    }
+                    filterList = filtering; //검색창에서 입력받은 아이템만 출력한다.
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = filterList;
+                return filterResults;
+            }
+
+            //필터링된걸로 리사이클러뷰 업데이트
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                filterList = (ArrayList<SupportModel>)results.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
+
+    /**
+     * DB 입력
+     * @param check : 좋아요 체크 여부
+     * @param id : 좋아요한 지원사업 id
+     */
     public void DB_IO(boolean check,String id){
         Thread thread = new Thread(()->{
             AppDatabase db = Room.databaseBuilder(context,AppDatabase.class,"app_db").build();

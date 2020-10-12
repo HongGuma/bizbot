@@ -46,6 +46,11 @@ dependencies {
     implementation "androidx.room:room-runtime:2.2.5"
     annotationProcessor "androidx.room:room-compiler:2.2.5"
 
+    implementation('com.github.shin285:KOMORAN:3.3.4') {
+        exclude group: 'com.github.shineware', module: 'commons'
+        exclude group: 'com.github.shineware', module: 'aho-corasick'
+    }
+
 
 
 }

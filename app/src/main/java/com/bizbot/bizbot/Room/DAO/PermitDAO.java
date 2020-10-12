@@ -31,7 +31,7 @@ public interface PermitDAO {
     @Query("SELECT * FROM Permit WHERE id=1")
     LiveData<PermitModel> getAlertState();
 
-    @Query("SELECT * FROM Permit WHERE id=1")
+    @Query("SELECT Alert FROM Permit WHERE id=1")
     boolean isAlertCheck();
 
     @Query("SELECT * FROM Permit")
