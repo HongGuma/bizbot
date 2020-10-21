@@ -9,10 +9,13 @@ import android.os.Build;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.room.Room;
 
 import com.bizbot.bizbot.R;
 import com.bizbot.bizbot.Room.AppDatabase;
+import com.bizbot.bizbot.Room.AppViewModel;
 import com.bizbot.bizbot.Room.Entity.PermitModel;
 import com.bizbot.bizbot.Room.Entity.SupportModel;
 import com.bizbot.bizbot.Support.SupportActivity;
@@ -60,9 +63,6 @@ public class SynchronizationData{
             PermitModel permit = db.permitDAO().getAll();
             Date sync = simpleDateFormat.parse(permit.getSyncTime());
 
-            int n =0;
-            List<String> IDs = db.supportDAO().getID();
-
             for(int i=0; i<jsonArray.length();i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
 
@@ -94,24 +94,17 @@ public class SynchronizationData{
                 Date create = simpleDateFormat.parse(s_list.getCreatPnttm());
                 long differentTime = sync.getTime() - create.getTime();
                 long differentDay = differentTime/(24*60*60*1000);
-                if(differentDay <= 2){
+                //Log.d(TAG, "SyncData: differntDay="+differentDay);
+                if(differentDay <= 2)
                     s_list.setCheckNew(true);
-                    db.supportDAO().updateNew(true,s_list.getPblancId());
-                }
-                else{
+                else
                     s_list.setCheckNew(false);
-                    db.supportDAO().updateNew(false,s_list.getPblancId());
-                }
 
-                if(IDs.get(n).equals(s_list.getPblancId())){
-                    db.supportDAO().update(s_list); //데이터 업데이트
-                    n++;
-                }
-                else{
-                    db.supportDAO().insert(s_list); //데이터 추가
-                    if(db.permitDAO().isAlertCheck() && sync.compareTo(create) < 0)
-                        NotificationNewSupport(i,s_list.getCreatPnttm(),s_list.getPblancNm()); //새글 알림
-                }
+                db.supportDAO().insert(s_list); //데이터 추가
+
+                if(db.permitDAO().isAlertCheck() && sync.compareTo(create) < 0)
+                    NotificationNewSupport(i,s_list.getCreatPnttm(),s_list.getPblancNm()); //새글 알림
+
 
             }
             end = System.currentTimeMillis();

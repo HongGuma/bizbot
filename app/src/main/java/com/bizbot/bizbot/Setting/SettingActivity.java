@@ -46,13 +46,13 @@ public class SettingActivity extends AppCompatActivity {
         SwitchCompat alertSwitch = (SwitchCompat)findViewById(R.id.alert_check);
 
         AppViewModel viewModel = ViewModelProviders.of(this).get(AppViewModel.class);
-        viewModel.getAlert().observe(this, new Observer<PermitModel>() {
+        viewModel.getAlertState().observe(this, new Observer<PermitModel>() {
             @Override
             public void onChanged(PermitModel permitModel) {
                 alertSwitch.setChecked(permitModel.isAlert());
             }
         });
-        //Log.d(TAG, "onCreate: alertCheck="+alertCheck.isAlert());
+
 
         alertSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

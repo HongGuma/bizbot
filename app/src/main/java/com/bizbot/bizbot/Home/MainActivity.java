@@ -7,10 +7,13 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
@@ -28,7 +31,6 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
-    public static final int REPEAT_DELAY = 1800000;//반복할 시간 (30분 = 1800000)
     public static final int THREAD_END = 0;
     public static final int THREAD_ERROR = 1;
 
@@ -43,7 +45,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_activity);
+        Window window = getWindow();
+        window.setContentView(R.layout.main_activity);
 
         //레이아웃 선언 부분
         RecyclerView adRecyclerView = (RecyclerView)findViewById(R.id.ad_list); //광고 리사이클러뷰
@@ -88,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
         //변화 감지해서 리스트 갱신
         //todo: 지금은 지원 사업 리스트 가져오지만 나중에 광고 리스트로 수정
         AppViewModel appViewModel = ViewModelProviders.of(this).get(AppViewModel.class);
-        appViewModel.getAllList().observe(this, new Observer<List<SupportModel>>() {
+        appViewModel.getAllSupportItem().observe(this, new Observer<List<SupportModel>>() {
             @Override
             public void onChanged(List<SupportModel> supportModels) {
                 //Log.d(TAG, "onChanged: supportModels="+supportModels.size());

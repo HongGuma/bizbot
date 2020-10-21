@@ -33,10 +33,10 @@ public class FavouriteActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(FavouriteActivity.this);
         fRecyclerView.setLayoutManager(layoutManager);
 
-        SupportListAdapter likeAdapter = new SupportListAdapter(getBaseContext(),null,null);
+        SupportListAdapter likeAdapter = new SupportListAdapter(getBaseContext(),this,null,null);
 
         AppViewModel appViewModel = ViewModelProviders.of(this).get(AppViewModel.class);
-        appViewModel.getAllLiked().observe(FavouriteActivity.this, new Observer<List<SupportModel>>() {
+        appViewModel.getAllLikedItem().observe(FavouriteActivity.this, new Observer<List<SupportModel>>() {
             @Override
             public void onChanged(List<SupportModel> supportModels) {
                 likeAdapter.setList(supportModels);

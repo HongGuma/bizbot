@@ -87,6 +87,11 @@ public class SupportDetail extends AppCompatActivity {
 
     }
 
+    /**
+     * HTML 태그 제거
+     * @param str : 화면에 띄울 본문 데이터
+     * @param textView : 본문 띄우는 textview
+     */
     public void SliceContents(String str,TextView textView){
         String[] arr1 = str.split("<br />");
         String line1 = "";
@@ -107,6 +112,8 @@ public class SupportDetail extends AppCompatActivity {
         String line4 = "";
         for(String word: arr4)
             line4 += word + " ";
+
+        line4 = line4.replace("R&amp;D","R&D");
 
         textView.setText(line4);
 

@@ -1,5 +1,6 @@
 package com.bizbot.bizbot.Support;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -13,12 +14,15 @@ import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 import com.bizbot.bizbot.R;
 import com.bizbot.bizbot.Room.AppDatabase;
+import com.bizbot.bizbot.Room.AppViewModel;
 import com.bizbot.bizbot.Room.Entity.SupportModel;
 
 import java.util.ArrayList;
@@ -35,9 +39,11 @@ public class SupportListAdapter extends RecyclerView.Adapter<SupportListAdapter.
     private KeywordAdapter kwAdapter;
     private String area = null;
     private String field = null;
+    private FragmentActivity activity;
 
-    public SupportListAdapter(Context context, String area, String field){
+    public SupportListAdapter(Context context,FragmentActivity activity, String area, String field){
         this.context = context;
+        this.activity = activity;
         this.area = area;
         this.field = field;
     }
@@ -104,15 +110,17 @@ public class SupportListAdapter extends RecyclerView.Adapter<SupportListAdapter.
         holder.likeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                AppViewModel viewModel = ViewModelProviders.of(activity).get(AppViewModel.class);
                 if(holder.likeBtn.isChecked()){
                     holder.likeBtn.setBackgroundResource(R.drawable.heart);
                     Toast.makeText(context,"관심사업으로 등록되었습니다.",Toast.LENGTH_SHORT).show();
-                    DB_IO(true,filterList.get(position).getPblancId());
+                    viewModel.setLikedItem(true,filterList.get(position).getPblancId());
                 }else{
                     holder.likeBtn.setBackgroundResource(R.drawable.heart_empty);
                     Toast.makeText(context,"관심사업이 해제되었습니다.",Toast.LENGTH_SHORT).show();
-                    DB_IO(false,filterList.get(position).getPblancId());
+                    viewModel.setLikedItem(false,filterList.get(position).getPblancId());
                 }
+
             }
         });
 
@@ -226,6 +234,7 @@ public class SupportListAdapter extends RecyclerView.Adapter<SupportListAdapter.
                 notifyDataSetChanged();
                 break;
             case 4: //접수 기간 마감순 정렬
+
                 Comparator<SupportModel> term = (item1, item2) -> {
                     int result = item1.getReqstBeginEndDe().compareTo(item2.getReqstBeginEndDe());
                     return result;
@@ -288,17 +297,28 @@ public class SupportListAdapter extends RecyclerView.Adapter<SupportListAdapter.
         };
     }
 
-    /**
-     * DB 입력
-     * @param check : 좋아요 체크 여부
-     * @param id : 좋아요한 지원사업 id
-     */
-    public void DB_IO(boolean check,String id){
-        Thread thread = new Thread(()->{
-            AppDatabase db = Room.databaseBuilder(context,AppDatabase.class,"app_db").build();
-            db.supportDAO().updateLike(check,id);
-            db.close();
-        });
-        thread.start();
+    public boolean PosTaggingFilter(ArrayList<String> strList){
+        boolean result = false;
+        ArrayList<SupportModel> filtering = new ArrayList<SupportModel>();
+            for (SupportModel item : sList) {
+                for(String word: strList) {
+                //세부 내용으로 검색
+                //한 내용에 모든 명사가 다 들어가야 출력
+                if (item.getBsnsSumryCn().toLowerCase().contains(word.toLowerCase())){
+                    filtering.add(item); //전체 데이터 중에서 입력받은 데이터만 추가
+                    break;
+                }
+            }
+        }
+
+        filterList = filtering; //검색창에서 입력받은 아이템만 출력한다.
+        notifyDataSetChanged();
+        if(filterList == null)
+            result = false;
+        else
+            result = true;
+
+        return result;
     }
+
 }

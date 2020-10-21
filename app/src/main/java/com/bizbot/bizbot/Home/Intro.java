@@ -135,7 +135,7 @@ public class Intro extends AppCompatActivity {
     //db 데이터 있는지 없는지
     public boolean checkData(){
         AppViewModel appViewModel = ViewModelProviders.of(this).get(AppViewModel.class);
-        appViewModel.getAllList().observe(this, new Observer<List<SupportModel>>() {
+        appViewModel.getAllSupportItem().observe(this, new Observer<List<SupportModel>>() {
             @Override
             public void onChanged(List<SupportModel> supportModels) {
                 if(supportModels == null)
@@ -196,16 +196,6 @@ public class Intro extends AppCompatActivity {
 
     }
 
-    //테이블 칼럼 삭제 (디버깅용)
-    private void ClearDB(){
-        Thread thread = new Thread(()->{
-            AppDatabase db = Room.databaseBuilder(getBaseContext(),AppDatabase.class,"app_db").build();
-            db.supportDAO().deleteAll();
-            db.close();
-        });
-        thread.start();
-    }
-
     //알림 여부 db저장
     public void DB_IO(PermitModel permit){
         Thread thread = new Thread(()->{
@@ -259,7 +249,7 @@ public class Intro extends AppCompatActivity {
             JobInfo jobInfo = new JobInfo.Builder(JOB_ID_UPDATE,new ComponentName(this, DataJobService.class))
                     .setRequiresStorageNotLow(true) //충분한 저장공간
                     .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY) //네트워크 타입
-                    .setPeriodic(TimeUnit.MINUTES.toMillis(30))//30분마다 실행
+                    .setPeriodic(TimeUnit.MINUTES.toMillis(20))//20분마다 실행
                     //.setTriggerContentMaxDelay(TimeUnit.MINUTES.toMillis(3))//3분후 실행
                     .build();
 
@@ -273,7 +263,8 @@ public class Intro extends AppCompatActivity {
                 else
                     Log.d(TAG, "run: 데이터 다운 실패");
             }else{
-                jobScheduler.schedule(jobInfo);
+                if(jobInfo != null)
+                    jobScheduler.schedule(jobInfo);
             }
 
         });

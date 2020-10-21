@@ -99,10 +99,12 @@ public class InitData {
 
                 //새글 체크
                 Date create = simpleDateFormat.parse(s_list.getCreatPnttm());
-                assert sync != null;
-                if(sync.compareTo(create) < 0){
+                long differentTime = sync.getTime() - create.getTime();
+                long differentDay = differentTime/(24*60*60*1000);
+
+                if(differentDay <= 2)
                     s_list.setCheckNew(true);
-                }else
+                else
                     s_list.setCheckNew(false);
 
                 db.supportDAO().insert(s_list); //데이터 추가

@@ -7,6 +7,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -22,6 +23,8 @@ import com.bizbot.bizbot.Home.MainActivity;
 import com.bizbot.bizbot.R;
 import com.bizbot.bizbot.Room.Entity.SupportModel;
 import com.bizbot.bizbot.Room.AppViewModel;
+import com.bizbot.bizbot.Search.SearchActivity;
+import com.bizbot.bizbot.Search.SearchAdapter;
 
 import java.util.List;
 
@@ -44,6 +47,7 @@ public class SupportActivity extends AppCompatActivity {
         TextView SportCunt = (TextView)findViewById(R.id.support_list_count); //지원사업 건수
         TextView pop_up = (TextView)findViewById(R.id.new_pop_up); //새 게시물 팝업
         ProgressBar progressBar = (ProgressBar)findViewById(R.id.progressBar); //로딩 아이콘
+        LinearLayout searchBar = (LinearLayout)findViewById(R.id.search_bar); //검색 창
 
         //카테고리에서 받아온 지역과 분야 키워드
         String areaWord = getIntent().getStringExtra("areaItem");
@@ -57,11 +61,11 @@ public class SupportActivity extends AppCompatActivity {
         sRecyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager =new LinearLayoutManager(SupportActivity.this);
         sRecyclerView.setLayoutManager(layoutManager);
-        SupportListAdapter listAdapter = new SupportListAdapter(getBaseContext(),areaWord,fieldWord); //어뎁터 생성
+        SupportListAdapter listAdapter = new SupportListAdapter(getBaseContext(),this, areaWord,fieldWord); //어뎁터 생성
 
         //변화 감지해서 리스트 갱신
         AppViewModel appViewModel = ViewModelProviders.of(this).get(AppViewModel.class);
-        appViewModel.getAllList().observe(SupportActivity.this, new Observer<List<SupportModel>>() {
+        appViewModel.getAllSupportItem().observe(SupportActivity.this, new Observer<List<SupportModel>>() {
             @Override
             public void onChanged(List<SupportModel> supportModels) {
                 //Log.d(TAG, "onChanged: supportModels.size()="+supportModels.size());
@@ -105,6 +109,12 @@ public class SupportActivity extends AppCompatActivity {
         //카테고리 메뉴 버튼 클릭시
         categoryBtn.setOnClickListener(view -> {
             startActivity(new Intent(SupportActivity.this, CategoryActivity.class));
+            finish();
+        });
+
+        //검색바 클릭시
+        searchBar.setOnClickListener(view ->{
+            startActivity(new Intent(SupportActivity.this, SearchActivity.class));
             finish();
         });
 
