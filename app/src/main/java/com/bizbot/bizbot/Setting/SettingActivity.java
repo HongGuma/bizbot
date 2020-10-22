@@ -46,7 +46,7 @@ public class SettingActivity extends AppCompatActivity {
         SwitchCompat alertSwitch = (SwitchCompat)findViewById(R.id.alert_check);
 
         AppViewModel viewModel = ViewModelProviders.of(this).get(AppViewModel.class);
-        viewModel.getAlertState().observe(this, new Observer<PermitModel>() {
+        viewModel.getAllPermit().observe(this, new Observer<PermitModel>() {
             @Override
             public void onChanged(PermitModel permitModel) {
                 alertSwitch.setChecked(permitModel.isAlert());

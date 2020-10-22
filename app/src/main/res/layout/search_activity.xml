@@ -11,7 +11,6 @@
     android:id="@+id/layout1"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="left"
     android:background="#ffffff">
         <ImageView
             android:id="@+id/close_btn"
@@ -20,14 +19,24 @@
             android:src="@drawable/backward_arrow"
             android:layout_margin="5dp"
             android:padding="10dp"/>
+        <!--디버깅용
         <TextView
-            android:id="@+id/test"
+            android:id="@+id/komoran"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="형태소 분석기 테스트"
+            android:text="코모란 테스트"
             android:layout_weight="1"
             android:textColor="#000000"
-            android:gravity="center_horizontal"/>
+            android:gravity="center_vertical" />
+        <TextView
+            android:id="@+id/kkma"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="꼬꼬마 테스트"
+            android:layout_weight="1"
+            android:textColor="#000000"
+            android:gravity="center_vertical"/>-->
+
     </LinearLayout>
 
     <LinearLayout
@@ -48,6 +57,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_weight="1"
+                android:hint="찾으실 세부내용을 입력하세요"
+                android:textColorHint="#B5B5B5"
                 android:backgroundTint="#ffffff"
                 android:textColor="#000000" />
 
@@ -76,6 +87,26 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:visibility="gone">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="검색 내용 : "
+                android:textColor="#000000"
+                android:textSize="20dp"
+                android:layout_margin="4dp"/>
+            <TextView
+                android:id="@+id/search_analysis_word"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#000000"
+                android:textSize="18dp"
+                android:layout_margin="4dp"
+                android:layout_weight="1"/>
+        </LinearLayout>
         <TextView
             android:id="@+id/search_result_null"
             android:layout_width="match_parent"

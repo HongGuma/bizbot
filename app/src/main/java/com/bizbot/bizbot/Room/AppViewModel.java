@@ -34,8 +34,9 @@ public class AppViewModel extends AndroidViewModel {
     private SearchWordDAO mSearchWordDAO; //최근 검색어 DAO
     private LiveData<List<SupportModel>> allSupportItem; //지원 사업 리스트
     private LiveData<List<SupportModel>> allLikedItem; //관심 사업 리스트
-    private LiveData<PermitModel> alert; //알림
+    private LiveData<PermitModel> allPermit; //permit 모두 출력
     private LiveData<List<SearchWordModel>> allSearchItem;//검색어 리스트
+    private LiveData<SearchWordModel> searchItem;//검색어 아이템
 
 
     public AppViewModel(@NonNull Application application) {
@@ -46,18 +47,10 @@ public class AppViewModel extends AndroidViewModel {
         allLikedItem = mSupportDAO.getLikedList(); //관심 사업 아이템 전부 가져오기
 
         mPermitDAO = db.permitDAO();//db에 있는 permitDAO 가져오기
-        alert = mPermitDAO.getAlertState(); //알림 설정 상태 가져오기
+        allPermit = mPermitDAO.getAll(); //알림 설정 상태 가져오기
 
         mSearchWordDAO = db.searchWordDAO();
         allSearchItem = mSearchWordDAO.getAll(); //검색어 리스트 가져오기
-        /*
-        mAppRepository = new AppRepository(application);
-        mAllItem = mAppRepository.getAllSupportItem();
-        mAllLiked = mAppRepository.getAllLikedItem();
-        alert = mAppRepository.getAlertState();
-        mAllSearch = mAppRepository.getAllSearchItem();
-
-         */
     }
 
     //관심사업 목록 출력
@@ -84,11 +77,22 @@ public class AppViewModel extends AndroidViewModel {
         diskIO.execute(run);
     }
 
-    //알림설정 상태 출력
-    public LiveData<PermitModel> getAlertState() {return alert;}
+    //permit 모두 출력
+    public LiveData<PermitModel> getAllPermit() {return allPermit;}
+    //동기화 시간 설정
+    public void setSyncTime(String time){
+        Runnable run = () -> mPermitDAO.setSyncTime(time);
 
-    //검색어 리스트 출력
+        Executor diskIO = Executors.newSingleThreadExecutor();
+        diskIO.execute(run);
+    }
+
+    //모든 검색어 리스트 출력
     public LiveData<List<SearchWordModel>> getAllSearchItem() { return allSearchItem;}
+    //검색어 아이템 하나만 출력
+    public LiveData<SearchWordModel> getSearchItem(int id){
+        return searchItem = mSearchWordDAO.getItem(id);
+    }
     //검색어 리스트 입력
     public void insertSearchItem(SearchWordModel word){
         Runnable run = () -> mSearchWordDAO.insert(word);
@@ -112,42 +116,4 @@ public class AppViewModel extends AndroidViewModel {
         diskIO.execute(run);
     }
 
-    /*
-    //지원 사업 아이템 출력
-    public LiveData<List<SupportModel>> getAllList(){
-        return mAllItem;
-    }
-
-    //관심 사업 아이템 출력
-    public LiveData<List<SupportModel>> getAllLiked() {
-        return mAllLiked;
-    }
-    //관심 사업 아이템 설정
-    public void SetLikedItem(boolean check, String id) {
-        mAppRepository.setLikedItem(check,id);
-    }
-
-    //알림 설정 여부
-    public LiveData<PermitModel> getAlert(){
-        return alert;
-    }
-
-    //최근 검색어 리스트 출력
-    public LiveData<List<SearchWordModel>> getAllSearch(){
-        return mAllSearch;
-    }
-    //검색어 삽입
-    public void insertSearch(SearchWordModel word){
-        mAppRepository.insertSearchItem(word);
-    }
-    //검색어 모두 삭제
-    public void deleteAllSearch(){
-        mAppRepository.deleteSearchAll();;
-    }
-    //검색어 아이템 삭제
-    public void deleteSearchItem(int id){
-        mAppRepository.deleteSearchItem(id);
-    }
-
-     */
 }

@@ -4,6 +4,8 @@ import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.util.Log;
 
+import com.bizbot.bizbot.Home.Intro;
+
 public class DataJobService extends JobService {
     private static final String TAG = "DataJobService";
 
@@ -17,7 +19,7 @@ public class DataJobService extends JobService {
                 Log.d(TAG, "run: 데이터 다운 시작");
                 
                 SynchronizationData syncData = new SynchronizationData(getBaseContext());
-                int result = syncData.SyncData();;
+                int result = syncData.SyncData();
                 if(result == 0)
                     Log.d(TAG, "run: 데이터 다운 완료");
                 else

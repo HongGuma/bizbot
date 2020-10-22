@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.StringTokenizer;
 
 public class SupportListAdapter extends RecyclerView.Adapter<SupportListAdapter.ViewHolder> {
     private static final String TAG = "SupportLisAdapter";
@@ -297,23 +298,38 @@ public class SupportListAdapter extends RecyclerView.Adapter<SupportListAdapter.
         };
     }
 
-    public boolean PosTaggingFilter(ArrayList<String> strList){
+    /**
+     * 형태소 분석기 검색 필터
+     * @param wordList : 형태소 분석기로 분석한 단어 리스트
+     * @return 필터링된 지원사업 리스트
+     */
+    public boolean PosTaggingFilter(ArrayList<String> wordList){
         boolean result = false;
         ArrayList<SupportModel> filtering = new ArrayList<SupportModel>();
-            for (SupportModel item : sList) {
-                for(String word: strList) {
+        for (SupportModel item : sList) {
+            for(String word: wordList) {
+                //단어 사이 공백 없애기 (ex : 중소 기업 -> 중소기업)
+                word = word.replace(" ","");
+                //한글로 입력한 영단어 영어로 변환 todo:(나중에 단어가 많아지면 함수로 구현)
+                if(word.equals("코트라"))
+                    word = "Kotra";
+                if(word.equals("알앤디"))
+                    word = "R&D";
+
                 //세부 내용으로 검색
-                //한 내용에 모든 명사가 다 들어가야 출력
-                if (item.getBsnsSumryCn().toLowerCase().contains(word.toLowerCase())){
+                //문자열에 해당 단어만 들어가도 출력
+                if (item.getBsnsSumryCn().contains(word)){
                     filtering.add(item); //전체 데이터 중에서 입력받은 데이터만 추가
                     break;
                 }
+
+
             }
         }
 
         filterList = filtering; //검색창에서 입력받은 아이템만 출력한다.
         notifyDataSetChanged();
-        if(filterList == null)
+        if(filterList.size() == 0)
             result = false;
         else
             result = true;

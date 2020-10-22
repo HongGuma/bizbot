@@ -10,6 +10,7 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.room.Room;
 
@@ -37,10 +38,14 @@ public class SynchronizationData{
     public static final int THREAD_ERROR = 1;
 
     Context context;
+    FragmentActivity activity;
+    Date sync;
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA);
+    boolean alertCheck;
 
     public SynchronizationData(Context context){
         this.context = context;
+        //this.activity = activity;
     }
 
     /**
@@ -60,8 +65,21 @@ public class SynchronizationData{
             JSONArray jsonArray = json.getJSONArray("jsonArray");
 
             AppDatabase db = Room.databaseBuilder(context, AppDatabase.class,"app_db").build(); //db
-            PermitModel permit = db.permitDAO().getAll();
+            PermitModel permit = db.permitDAO().getItem();
             Date sync = simpleDateFormat.parse(permit.getSyncTime());
+
+            /*
+            AppViewModel viewModel = ViewModelProviders.of(activity).get(AppViewModel.class);
+            viewModel.getAllPermit().observe(activity, permitModel -> {
+                try {
+                    sync = simpleDateFormat.parse(permitModel.getSyncTime());
+                    alertCheck = permitModel.isAlert();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            });
+
+            */
 
             for(int i=0; i<jsonArray.length();i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -100,21 +118,21 @@ public class SynchronizationData{
                 else
                     s_list.setCheckNew(false);
 
+                //viewModel.insertSupportItem(s_list);
                 db.supportDAO().insert(s_list); //데이터 추가
 
-                if(db.permitDAO().isAlertCheck() && sync.compareTo(create) < 0)
+                if(alertCheck && sync.compareTo(create) < 0)
                     NotificationNewSupport(i,s_list.getCreatPnttm(),s_list.getPblancNm()); //새글 알림
-
-
             }
+
             end = System.currentTimeMillis();
             //Log.d(TAG, "run: supportList="+supportList.get(0).getPblancNm());
-
             Log.d(TAG, "data loading : "+(end-start)/1000.0+" s");
 
             //동기화 시간 업데이트
             Date syncDate = new Date(System.currentTimeMillis());
             String syncTime = simpleDateFormat.format(syncDate);
+            //viewModel.setSyncTime(syncTime);
             db.permitDAO().setSyncTime(syncTime);
 
             db.close();

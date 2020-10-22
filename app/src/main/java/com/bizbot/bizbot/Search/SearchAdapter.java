@@ -5,11 +5,13 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,19 +21,23 @@ import com.bizbot.bizbot.R;
 import com.bizbot.bizbot.Room.AppDatabase;
 import com.bizbot.bizbot.Room.AppViewModel;
 import com.bizbot.bizbot.Room.Entity.SearchWordModel;
+import com.bizbot.bizbot.Room.Entity.SupportModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> {
 
     ArrayList<SearchWordModel> wordList = new ArrayList<>();
     Context context;
     FragmentActivity activity;
-    private int id;
+    String searchWord;
+    EditText input;
 
-    public SearchAdapter(Context context, FragmentActivity activity){//, ArrayList<SearchWordModel> list){
+    public SearchAdapter(Context context, FragmentActivity activity, EditText inputTEXT){//, ArrayList<SearchWordModel> list){
         this.context = context;
         this.activity = activity;
+        this.input = inputTEXT;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
@@ -56,12 +62,27 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        AppViewModel viewModel = ViewModelProviders.of(activity).get(AppViewModel.class);
         holder.lastSearchWord.setText(wordList.get(position).getWord());
         holder.clearBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AppViewModel viewModel = ViewModelProviders.of(activity).get(AppViewModel.class);
                 viewModel.deleteSearchItem(wordList.get(position).getId());
+            }
+        });
+
+        holder.lastSearchWord.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewModel.getSearchItem(wordList.get(position).getId()).observe(activity, new Observer<SearchWordModel>() {
+                    @Override
+                    public void onChanged(SearchWordModel searchWordModel) {
+                        if(searchWordModel != null){
+                            searchWord = searchWordModel.getWord();
+                            input.setText(searchWord);
+                        }
+                    }
+                });
             }
         });
     }

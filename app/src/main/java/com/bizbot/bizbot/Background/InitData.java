@@ -10,10 +10,13 @@ import android.os.Build;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.room.Room;
 
 import com.bizbot.bizbot.R;
 import com.bizbot.bizbot.Room.AppDatabase;
+import com.bizbot.bizbot.Room.AppViewModel;
 import com.bizbot.bizbot.Room.Entity.PermitModel;
 import com.bizbot.bizbot.Room.Entity.SupportModel;
 import com.bizbot.bizbot.Support.SupportActivity;
@@ -33,7 +36,6 @@ public class InitData {
     public static final int THREAD_END = 0;
     public static final int THREAD_ERROR = 1;
 
-    String url;
     Context context;
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA);
 
@@ -67,8 +69,9 @@ public class InitData {
             JSONArray jsonArray = json.getJSONArray("jsonArray");
 
             AppDatabase db = Room.databaseBuilder(context, AppDatabase.class,"app_db").build(); //db
-            PermitModel permit = db.permitDAO().getAll();
+            PermitModel permit = db.permitDAO().getItem();
             Date sync = simpleDateFormat.parse(permit.getSyncTime());
+
 
             for(int i=0; i<jsonArray.length();i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -108,7 +111,6 @@ public class InitData {
                     s_list.setCheckNew(false);
 
                 db.supportDAO().insert(s_list); //데이터 추가
-
             }
             end = System.currentTimeMillis();
             //Log.d(TAG, "run: supportList="+supportList.get(0).getPblancNm());

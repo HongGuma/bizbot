@@ -29,13 +29,14 @@ public interface PermitDAO {
     void setSyncTime(String time);
 
     @Query("SELECT * FROM Permit WHERE id=1")
-    LiveData<PermitModel> getAlertState();
+    LiveData<PermitModel> getAll();
 
     @Query("SELECT Alert FROM Permit WHERE id=1")
     boolean isAlertCheck();
 
     @Query("SELECT * FROM Permit")
-    PermitModel getAll();
+    PermitModel getItem();
+
 
 
 }

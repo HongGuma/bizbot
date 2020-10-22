@@ -52,4 +52,6 @@ dependencies {
         exclude group: 'com.github.shineware', module: 'ds_library'
     }
 
+    implementation files("libs/kkma-2.1.jar")
+
 }

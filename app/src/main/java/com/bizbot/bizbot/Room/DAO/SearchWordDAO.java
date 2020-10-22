@@ -26,5 +26,6 @@ public interface SearchWordDAO {
     @Query("SELECT * FROM Search")
     LiveData<List<SearchWordModel>> getAll();
 
-
+    @Query("SELECT * FROM SEARCH WHERE id = :id")
+    LiveData<SearchWordModel> getItem(int id);
 }
