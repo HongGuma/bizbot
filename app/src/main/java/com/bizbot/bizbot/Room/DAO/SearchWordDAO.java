@@ -20,12 +20,12 @@ public interface SearchWordDAO {
     @Query("DELETE FROM Search")
     void deleteAll();
 
-    @Query("DELETE FROM Search Where id = :id")
-    void deleteItem(int id);
+    @Query("DELETE FROM Search Where word = :word")
+    void deleteItem(String word);
 
     @Query("SELECT * FROM Search")
     LiveData<List<SearchWordModel>> getAll();
 
-    @Query("SELECT * FROM SEARCH WHERE id = :id")
-    LiveData<SearchWordModel> getItem(int id);
+    @Query("SELECT * FROM SEARCH WHERE word = :word")
+    LiveData<SearchWordModel> getItem(String word);
 }

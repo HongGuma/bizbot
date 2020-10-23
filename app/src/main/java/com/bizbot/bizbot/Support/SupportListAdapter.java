@@ -24,6 +24,7 @@ import com.bizbot.bizbot.R;
 import com.bizbot.bizbot.Room.AppDatabase;
 import com.bizbot.bizbot.Room.AppViewModel;
 import com.bizbot.bizbot.Room.Entity.SupportModel;
+import com.bizbot.bizbot.SEARCH_MODE;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -303,27 +304,31 @@ public class SupportListAdapter extends RecyclerView.Adapter<SupportListAdapter.
      * @param wordList : 형태소 분석기로 분석한 단어 리스트
      * @return 필터링된 지원사업 리스트
      */
-    public boolean PosTaggingFilter(ArrayList<String> wordList){
+    public boolean PosTaggingFilter(ArrayList<String> wordList, SEARCH_MODE search_type){
         boolean result = false;
         ArrayList<SupportModel> filtering = new ArrayList<SupportModel>();
         for (SupportModel item : sList) {
             for(String word: wordList) {
                 //단어 사이 공백 없애기 (ex : 중소 기업 -> 중소기업)
                 word = word.replace(" ","");
-                //한글로 입력한 영단어 영어로 변환 todo:(나중에 단어가 많아지면 함수로 구현)
-                if(word.equals("코트라"))
-                    word = "Kotra";
-                if(word.equals("알앤디"))
-                    word = "R&D";
-
-                //세부 내용으로 검색
-                //문자열에 해당 단어만 들어가도 출력
-                if (item.getBsnsSumryCn().contains(word)){
-                    filtering.add(item); //전체 데이터 중에서 입력받은 데이터만 추가
-                    break;
+                //세부 내용으로 검색, 문자열에 해당 단어만 들어가도 출력
+                switch (search_type){
+                    case TITLE:
+                        if (item.getPblancNm().contains(word)){
+                            filtering.add(item); //전체 데이터 중에서 입력받은 데이터만 추가
+                        }
+                        break;
+                    case CONTENT:
+                        if (item.getBsnsSumryCn().contains(word)){
+                            filtering.add(item); //전체 데이터 중에서 입력받은 데이터만 추가
+                        }
+                        break;
+                    case AGENCY:
+                        if (item.getJrsdInsttNm().contains(word)){
+                            filtering.add(item); //전체 데이터 중에서 입력받은 데이터만 추가
+                        }
+                        break;
                 }
-
-
             }
         }
 

@@ -266,7 +266,7 @@ public class Intro extends AppCompatActivity {
                 if(jobInfo != null)
                     jobScheduler.schedule(jobInfo);
             }
-
+            db.close();
         });
         thread.start();
     }

@@ -4,21 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "Search")
+@Entity(tableName = "search")
 public class SearchWordModel {
 
-    @PrimaryKey(autoGenerate = true)
-    int id;
+    @PrimaryKey
     @NonNull
     String word;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getWord() {
         return word;

@@ -3,7 +3,6 @@
 지원 사업	NNP
 코로나	NNP
 청년	NNG
-중소기업	NNP
 중소 기업	NNP
 서울	NNP
 부산	NNP
@@ -27,7 +26,7 @@
 창업	NNG
 경영	NNG
 보조금	NNG
-국고보조금	NNG
+국고 보조금	NNG
 기업	NNG
 4차	NNP
 4차 산업	NNP
@@ -35,17 +34,17 @@
 공고	NNG
 공모	NNG
 3차	NNP
-지역중소기업	NNP
+지역 중소기업	NNP
 R&D	NNP
 알앤디	NNP
 과제	NNP
-지원대상자	NNP
+지원 대상자	NNP
 모집	NNG
-해외	NNG
-해외진출	NNP
+해외 진출	NNP
 KOTRA	NNP
 kotra	NNP
 Kotra	NNP
 코트라	NNP
 코모란	NNP
 평가 사업	NNP
+r&d	NNP

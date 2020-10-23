@@ -31,6 +31,7 @@ import com.bizbot.bizbot.Room.AppDatabase;
 import com.bizbot.bizbot.Room.AppViewModel;
 import com.bizbot.bizbot.Room.Entity.SearchWordModel;
 import com.bizbot.bizbot.Room.Entity.SupportModel;
+import com.bizbot.bizbot.SEARCH_MODE;
 import com.bizbot.bizbot.Support.SupportListAdapter;
 
 import org.snu.ids.kkma.index.Keyword;
@@ -57,13 +58,10 @@ import kr.co.shineware.nlp.komoran.model.Token;
 
 public class SearchActivity extends AppCompatActivity {
     private static final String TAG = "SearchActivity";
-    public static int DB_IO = 1;
 
     SupportListAdapter resultAdapter;
     SearchAdapter searchAdapter;
-    AppDatabase db;
-    Handler adapterHandler;
-
+    ArrayList<String> words;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +76,10 @@ public class SearchActivity extends AppCompatActivity {
         RecyclerView lastSearchWord = (RecyclerView)findViewById(R.id.last_search_word);//최근 검색어 리사이클러뷰
         TextView notSearch = (TextView)findViewById(R.id.search_result_null); //일치하는 아이템이 없을때 안내 텍스트
         TextView searchWordClear = (TextView)findViewById(R.id.all_clear);//최근 검색어 모두 지우기 버튼
-        TextView analysisWord = (TextView)findViewById(R.id.search_analysis_word);
+        TextView analysisWord = (TextView)findViewById(R.id.search_analysis_word);//분석한 단어 띄우는 텍스트뷰
+        TextView titleBtn = (TextView)findViewById(R.id.search_title_btn); //제목 검색 버튼
+        TextView contentBtn = (TextView)findViewById(R.id.search_content_btn); //내용 검색 버튼
+        TextView agencyBtn = (TextView)findViewById(R.id.search_agency_btn); //기관 검색 버튼
 
         lastSearchWord.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -94,28 +95,17 @@ public class SearchActivity extends AppCompatActivity {
         lastSearchWord.setAdapter(searchAdapter);
 
         AppViewModel viewModel = ViewModelProviders.of(this).get(AppViewModel.class);
-        viewModel.getAllSupportItem().observe(this, new Observer<List<SupportModel>>() {
-            @Override
-            public void onChanged(List<SupportModel> supportModels) {
-                resultAdapter.setList(supportModels);
-            }
-        });
-        viewModel.getAllSearchItem().observe(this, new Observer<List<SearchWordModel>>() {
-            @Override
-            public void onChanged(List<SearchWordModel> searchWordModels) {
-                searchAdapter.setList((ArrayList<SearchWordModel>)searchWordModels);
-            }
-        });
+        //검색 결과 리스트
+        viewModel.getAllSupportItem().observe(this, supportModels -> resultAdapter.setList(supportModels));
+        //최근 검색어 리스트
+        viewModel.getAllSearchItem().observe(this, searchWordModels -> searchAdapter.setList((ArrayList<SearchWordModel>)searchWordModels));
 
         //모두 지우기 버튼 클릭시
-        searchWordClear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                viewModel.deleteSearchAll();
-                searchAdapter.notifyDataSetChanged();
-                lastSearchWord.setAdapter(searchAdapter);
+        searchWordClear.setOnClickListener(view -> {
+            viewModel.deleteSearchAll();
+            searchAdapter.notifyDataSetChanged();
+            lastSearchWord.setAdapter(searchAdapter);
 
-            }
         });
 
         //입력 텍스트 감지
@@ -144,102 +134,66 @@ public class SearchActivity extends AppCompatActivity {
             });
 
         //입력 텍스트 지우기 버튼
-        clearBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                searchEditText.setText(null);
-                searchItemLayout.setVisibility(View.GONE);
-            }
+        clearBtn.setOnClickListener(view -> {
+            searchEditText.setText(null);
+            searchItemLayout.setVisibility(View.GONE);
         });
 
         //검색 버튼
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /* 기본 검색 기능
-                String inputText = searchEditText.getText().toString();
-                if(inputText.length()<1){
-                    searchItemLayout.setVisibility(View.GONE);
-                }else{
-                    resultAdapter.getFilter().filter(inputText);
-
-                    searchResultRecyclerView.setAdapter(resultAdapter);
-                    searchItemLayout.setVisibility(View.VISIBLE);
-                    notSearch.setVisibility(View.GONE);
-                    SearchWordModel searchWordModel = new SearchWordModel();
-                    searchWordModel.setWord(inputText);
-                    viewModel.insertSearchItem(searchWordModel);
-                    searchAdapter.notifyDataSetChanged();
-
-                }
-
-                 */
-
                 //형태소 분석기 사용한 검색 기능
                 String inputText = searchEditText.getText().toString();
                 SearchWordModel searchWordModel = new SearchWordModel();
                 searchWordModel.setWord(inputText);
                 viewModel.insertSearchItem(searchWordModel); //입력한 검색어 저장
 
-                ArrayList<String> str = Komoran(inputText); //형태소 분석기 사용
+                words = Komoran(inputText); //형태소 분석기 사용
+
+                //분석기로 분해한 명사 출력
                 String line = "";
-                for(String word : str)
+                for(String word : words)
                     line += word + ", ";
+                if(!line.equals(""))
+                    line = line.substring(0,line.length()-2); //마지막 단어에 ', ' 제거
                 analysisWord.setText(line);
 
-                if(resultAdapter.PosTaggingFilter(str)){//일치하는 내용이 있으면
-                    notSearch.setVisibility(View.GONE);
-                }
-                else{//일치하는 내용이 없으면
-                    notSearch.setVisibility(View.VISIBLE);
-                    searchResultRecyclerView.setVisibility(View.GONE);
-                }
-
-                searchItemLayout.setVisibility(View.VISIBLE);
+                PrintSearchResult(SEARCH_MODE.TITLE,searchResultRecyclerView,notSearch);
 
             }
+        });
+
+        //제목 검색 출력 버튼
+        titleBtn.setOnClickListener(view -> {
+            PrintSearchResult(SEARCH_MODE.TITLE,searchResultRecyclerView,notSearch);
+        });
+        //내용 검색 출력 버튼
+        contentBtn.setOnClickListener(view -> {
+            PrintSearchResult(SEARCH_MODE.CONTENT,searchResultRecyclerView,notSearch);
+        });
+        //기관 검색 출력 버튼
+        agencyBtn.setOnClickListener(view -> {
+            PrintSearchResult(SEARCH_MODE.AGENCY,searchResultRecyclerView,notSearch);
         });
 
         //뒤로가기 버튼
-        closeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        closeBtn.setOnClickListener(view -> finish());
 
-        /*
-        TextView komoranBtn = (TextView)findViewById(R.id.komoran);
-        komoranBtn.setOnClickListener(view -> {
-            String inputText = searchEditText.getText().toString();
-            SearchWordModel searchWordModel = new SearchWordModel();
-            searchWordModel.setWord(inputText);
-            viewModel.insertSearchItem(searchWordModel);
+    }
 
-            ArrayList<String> str = Komoran(inputText);
-            if(resultAdapter.PosTaggingFilter(str)){
-                notSearch.setVisibility(View.GONE);
-            }
-            else{
-                notSearch.setVisibility(View.VISIBLE);
-                searchResultRecyclerView.setVisibility(View.GONE);
-            }
+    public void PrintSearchResult(SEARCH_MODE search_mode,RecyclerView searchResultRV,TextView notSearchTextView){
 
-            searchItemLayout.setVisibility(View.VISIBLE);
-
-
-        });
-
-        //디버깅용 나중에 삭제
-        TextView kkmaBtn = (TextView)findViewById(R.id.kkma);
-        kkmaBtn.setOnClickListener(view -> {
-            String path = getFilesDir()+"/user.txt";
-            File file = new File(path);
-            FileInit(file);
-            //if(!file.exists()){ }
-        });
-
-         */
+        boolean resultCheck = resultAdapter.PosTaggingFilter(words,search_mode);
+        if(resultCheck){//일치하는 내용이 있으면
+            notSearchTextView.setVisibility(View.GONE);
+            searchResultRV.setVisibility(View.VISIBLE);
+        }
+        else{//일치하는 내용이 없으면
+            notSearchTextView.setVisibility(View.VISIBLE);
+            searchResultRV.setVisibility(View.GONE);
+        }
+        searchResultRV.scrollToPosition(0);
 
     }
 
@@ -248,8 +202,8 @@ public class SearchActivity extends AppCompatActivity {
 
         String path = getFilesDir()+"/user.txt";
         File file = new File(path);
-        FileInit(file);
-        //if(!file.exists())
+        if(!file.exists())
+            FileInit(file);
 
         try{
             long start = System.currentTimeMillis();
@@ -257,8 +211,7 @@ public class SearchActivity extends AppCompatActivity {
             komoran.setUserDic(path);
             List<Token> tokens = komoran.analyze(inputStr).getTokenList();
             for(Token token : tokens){
-                //System.out.println(token);
-                if(token.getPos().equals("NNG") || token.getPos().equals("NNP")){
+                if(token.getPos().equals("NNG") || token.getPos().equals("NNP") || token.getPos().equals("SL")){
                     System.out.println(token.getMorph());
                     result.add(token.getMorph());
                 }
@@ -269,10 +222,10 @@ public class SearchActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        return result;
+        return WordProcessing(result);
     }
 
-    //assets 있는 사용자 사전 기기 내부 file에 저장
+    //assets 있는 '사용자 사전' 기기 내부 file에 저장
     public void FileInit(File file){
         try{
             String line ="";
@@ -298,6 +251,31 @@ public class SearchActivity extends AppCompatActivity {
 
     }
 
+    public ArrayList<String> WordProcessing(ArrayList<String> wordList){
+        ArrayList<String> processedStr = new ArrayList<>();
+        for(String word:wordList){
+            processedStr.add(word);
+            if(word.equals("코트라")){
+                processedStr.add("kotra");
+                processedStr.add("KOTRA");
+                processedStr.add("Kotra");
+            }
+            if(word.equals("알앤디")){
+                processedStr.add("R&D");
+                processedStr.add("r&d");
+                processedStr.add("R&amp;D");
+            }
+            if(word.equals("R&D")){
+                processedStr.add("r&d");
+                processedStr.add("R&amp;D");
+            }
+            if ( word.equals("r&d")){
+                processedStr.add("R&D");
+                processedStr.add("R&amp;D");
+            }
+        }
+        return processedStr;
+    }
 
     @Override
     public void onBackPressed() {

@@ -115,7 +115,17 @@ public class SupportDetail extends AppCompatActivity {
 
         line4 = line4.replace("R&amp;D","R&D");
 
-        textView.setText(line4);
+        String[] arr5 = line4.split("<div>");
+        String line5 = "";
+        for(String word: arr5)
+            line5 += word + " ";
+
+        String[] arr6 = line5.split("</div>");
+        String line6 = "";
+        for(String word: arr6)
+            line6 += word + " ";
+
+        textView.setText(line6);
 
     }
 

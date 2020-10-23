@@ -90,8 +90,8 @@ public class AppViewModel extends AndroidViewModel {
     //모든 검색어 리스트 출력
     public LiveData<List<SearchWordModel>> getAllSearchItem() { return allSearchItem;}
     //검색어 아이템 하나만 출력
-    public LiveData<SearchWordModel> getSearchItem(int id){
-        return searchItem = mSearchWordDAO.getItem(id);
+    public LiveData<SearchWordModel> getSearchItem(String word){
+        return searchItem = mSearchWordDAO.getItem(word);
     }
     //검색어 리스트 입력
     public void insertSearchItem(SearchWordModel word){
@@ -109,8 +109,8 @@ public class AppViewModel extends AndroidViewModel {
         diskIO.execute(run);
     }
     //검색어 아이템 삭제
-    public void deleteSearchItem(int id){
-        Runnable run = () -> mSearchWordDAO.deleteItem(id);
+    public void deleteSearchItem(String word){
+        Runnable run = () -> mSearchWordDAO.deleteItem(word);
 
         Executor diskIO = Executors.newSingleThreadExecutor();
         diskIO.execute(run);

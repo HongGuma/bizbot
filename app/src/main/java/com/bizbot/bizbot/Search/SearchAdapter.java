@@ -67,14 +67,14 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         holder.clearBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                viewModel.deleteSearchItem(wordList.get(position).getId());
+                viewModel.deleteSearchItem(wordList.get(position).getWord());
             }
         });
 
         holder.lastSearchWord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                viewModel.getSearchItem(wordList.get(position).getId()).observe(activity, new Observer<SearchWordModel>() {
+                viewModel.getSearchItem(wordList.get(position).getWord()).observe(activity, new Observer<SearchWordModel>() {
                     @Override
                     public void onChanged(SearchWordModel searchWordModel) {
                         if(searchWordModel != null){
