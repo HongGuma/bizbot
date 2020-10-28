@@ -309,9 +309,7 @@ public class SupportListAdapter extends RecyclerView.Adapter<SupportListAdapter.
         ArrayList<SupportModel> filtering = new ArrayList<SupportModel>();
         for (SupportModel item : sList) {
             for(String word: wordList) {
-                //단어 사이 공백 없애기 (ex : 중소 기업 -> 중소기업)
-                word = word.replace(" ","");
-                //세부 내용으로 검색, 문자열에 해당 단어만 들어가도 출력
+                //문자열에 해당 단어만 들어가도 출력
                 switch (search_type){
                     case TITLE:
                         if (item.getPblancNm().contains(word)){

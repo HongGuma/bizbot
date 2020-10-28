@@ -22,7 +22,7 @@ import java.util.List;
 public class AdListAdapter extends RecyclerView.Adapter<AdListAdapter.ViewHolder> {
     private static final String TAG = "AdListAdapter";
 
-    private List<SupportModel> sList;
+    private ArrayList<SupportModel> sList;
     private Context context;
     private String area = null;
 
@@ -89,7 +89,7 @@ public class AdListAdapter extends RecyclerView.Adapter<AdListAdapter.ViewHolder
         return wordList;
     }
 
-    public void setList(List<SupportModel> list){
+    public void setList(ArrayList<SupportModel> list){
         this.sList = list;
         notifyDataSetChanged();
     }

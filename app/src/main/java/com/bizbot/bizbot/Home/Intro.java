@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -182,7 +183,6 @@ public class Intro extends AppCompatActivity {
 
     //서버에서 데이터 다운
     private void Downloading(){
-        String baseURL = "http://www.bizinfo.go.kr/uss/rss/bizPersonaRss.do?dataType=json";
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {

@@ -26,6 +26,7 @@ import com.bizbot.bizbot.Room.AppViewModel;
 import com.bizbot.bizbot.Support.SupportActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -95,7 +96,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(List<SupportModel> supportModels) {
                 //Log.d(TAG, "onChanged: supportModels="+supportModels.size());
-                adListAdapter.setList(supportModels); //DB에서 꺼내온 리스트 교체
+                ArrayList<SupportModel> kotraList = new ArrayList<>();
+                for(SupportModel item : supportModels){
+                    if(item.getPblancNm().contains("KOTRA"))
+                        kotraList.add(item);
+                }
+                adListAdapter.setList(kotraList); //DB에서 꺼내온 리스트 교체
                 adRecyclerView.setAdapter(adListAdapter);
             }
         });

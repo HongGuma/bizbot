@@ -76,44 +76,21 @@ public class InitData {
             for(int i=0; i<jsonArray.length();i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
 
-                SupportModel s_list = new SupportModel();
-
-                s_list.setPblancId(jsonObject.optString("pblancId"));
-                s_list.setIndustNm(jsonObject.optString("industNm"));
-                s_list.setRceptInsttEmailAdres(jsonObject.optString("rceptInsttEmailAdres"));
-                s_list.setInqireCo(jsonObject.optInt("inqireCo"));
-                s_list.setRceptEngnHmpgUrl(jsonObject.optString("rceptEngnHmpgUrl"));
-                s_list.setPblancUrl(jsonObject.optString("pblancUrl"));
-                s_list.setJrsdInsttNm(jsonObject.optString("jrsdInsttNm"));
-                s_list.setRceptEngnNm(jsonObject.optString("rceptEngnNm"));
-                s_list.setEntrprsStle(jsonObject.optString("entrprsStle"));
-                s_list.setPldirSportRealmLclasCodeNm(jsonObject.optString("pldirSportRealmLclasCodeNm"));
-                s_list.setTrgetNm(jsonObject.optString("trgetNm"));
-                s_list.setRceptInsttTelno(jsonObject.optString("rceptInsttTelno"));
-                s_list.setBsnsSumryCn(jsonObject.optString("bsnsSumryCn"));
-                s_list.setReqstBeginEndDe(jsonObject.optString("reqstBeginEndDe"));
-                s_list.setAreaNm(jsonObject.optString("areaNm"));
-                s_list.setPldirSportRealmMlsfcCodeNm(jsonObject.optString("pldirSportRealmMlsfcCodeNm"));
-                s_list.setRceptInsttChargerDeptNm(jsonObject.optString("rceptInsttChargerDeptNm"));
-                s_list.setRceptInsttChargerNm(jsonObject.optString("rceptInsttChargerNm"));
-                s_list.setPblancNm(jsonObject.optString("pblancNm"));
-                s_list.setCreatPnttm(jsonObject.optString("creatPnttm"));
-                s_list.setCheckLike(false);
+                SupportModel supportList = JsonParsing_support(jsonObject);
 
                 //새글 체크
-                Date create = simpleDateFormat.parse(s_list.getCreatPnttm());
+                Date create = simpleDateFormat.parse(supportList.getCreatPnttm());
                 long differentTime = sync.getTime() - create.getTime();
                 long differentDay = differentTime/(24*60*60*1000);
 
                 if(differentDay <= 2)
-                    s_list.setCheckNew(true);
+                    supportList.setCheckNew(true);
                 else
-                    s_list.setCheckNew(false);
+                    supportList.setCheckNew(false);
 
-                db.supportDAO().insert(s_list); //데이터 추가
+                db.supportDAO().insert(supportList); //데이터 추가
             }
             end = System.currentTimeMillis();
-            //Log.d(TAG, "run: supportList="+supportList.get(0).getPblancNm());
 
             Log.d(TAG, "data loading : "+(end-start)/1000.0+" s");
 
@@ -124,9 +101,37 @@ public class InitData {
             return THREAD_ERROR; //에러
         }
 
+
+
     }
 
+    public SupportModel JsonParsing_support(JSONObject jsonObject) throws JSONException {
+            SupportModel s_list = new SupportModel();
 
+            s_list.setPblancId(jsonObject.optString("pblancId"));
+            s_list.setIndustNm(jsonObject.optString("industNm"));
+            s_list.setRceptInsttEmailAdres(jsonObject.optString("rceptInsttEmailAdres"));
+            s_list.setInqireCo(jsonObject.optInt("inqireCo"));
+            s_list.setRceptEngnHmpgUrl(jsonObject.optString("rceptEngnHmpgUrl"));
+            s_list.setPblancUrl(jsonObject.optString("pblancUrl"));
+            s_list.setJrsdInsttNm(jsonObject.optString("jrsdInsttNm"));
+            s_list.setRceptEngnNm(jsonObject.optString("rceptEngnNm"));
+            s_list.setEntrprsStle(jsonObject.optString("entrprsStle"));
+            s_list.setPldirSportRealmLclasCodeNm(jsonObject.optString("pldirSportRealmLclasCodeNm"));
+            s_list.setTrgetNm(jsonObject.optString("trgetNm"));
+            s_list.setRceptInsttTelno(jsonObject.optString("rceptInsttTelno"));
+            s_list.setBsnsSumryCn(jsonObject.optString("bsnsSumryCn"));
+            s_list.setReqstBeginEndDe(jsonObject.optString("reqstBeginEndDe"));
+            s_list.setAreaNm(jsonObject.optString("areaNm"));
+            s_list.setPldirSportRealmMlsfcCodeNm(jsonObject.optString("pldirSportRealmMlsfcCodeNm"));
+            s_list.setRceptInsttChargerDeptNm(jsonObject.optString("rceptInsttChargerDeptNm"));
+            s_list.setRceptInsttChargerNm(jsonObject.optString("rceptInsttChargerNm"));
+            s_list.setPblancNm(jsonObject.optString("pblancNm"));
+            s_list.setCreatPnttm(jsonObject.optString("creatPnttm"));
+            s_list.setCheckLike(false);
+
+            return s_list;
+    }
 
 }
 

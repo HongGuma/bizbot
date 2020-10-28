@@ -68,61 +68,25 @@ public class SynchronizationData{
             PermitModel permit = db.permitDAO().getItem();
             Date sync = simpleDateFormat.parse(permit.getSyncTime());
 
-            /*
-            AppViewModel viewModel = ViewModelProviders.of(activity).get(AppViewModel.class);
-            viewModel.getAllPermit().observe(activity, permitModel -> {
-                try {
-                    sync = simpleDateFormat.parse(permitModel.getSyncTime());
-                    alertCheck = permitModel.isAlert();
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-            });
-
-            */
-
             for(int i=0; i<jsonArray.length();i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
 
-                SupportModel s_list = new SupportModel();
-
-                s_list.setPblancId(jsonObject.optString("pblancId"));
-                s_list.setIndustNm(jsonObject.optString("industNm"));
-                s_list.setRceptInsttEmailAdres(jsonObject.optString("rceptInsttEmailAdres"));
-                s_list.setInqireCo(jsonObject.optInt("inqireCo"));
-                s_list.setRceptEngnHmpgUrl(jsonObject.optString("rceptEngnHmpgUrl"));
-                s_list.setPblancUrl(jsonObject.optString("pblancUrl"));
-                s_list.setJrsdInsttNm(jsonObject.optString("jrsdInsttNm"));
-                s_list.setRceptEngnNm(jsonObject.optString("rceptEngnNm"));
-                s_list.setEntrprsStle(jsonObject.optString("entrprsStle"));
-                s_list.setPldirSportRealmLclasCodeNm(jsonObject.optString("pldirSportRealmLclasCodeNm"));
-                s_list.setTrgetNm(jsonObject.optString("trgetNm"));
-                s_list.setRceptInsttTelno(jsonObject.optString("rceptInsttTelno"));
-                s_list.setBsnsSumryCn(jsonObject.optString("bsnsSumryCn"));
-                s_list.setReqstBeginEndDe(jsonObject.optString("reqstBeginEndDe"));
-                s_list.setAreaNm(jsonObject.optString("areaNm"));
-                s_list.setPldirSportRealmMlsfcCodeNm(jsonObject.optString("pldirSportRealmMlsfcCodeNm"));
-                s_list.setRceptInsttChargerDeptNm(jsonObject.optString("rceptInsttChargerDeptNm"));
-                s_list.setRceptInsttChargerNm(jsonObject.optString("rceptInsttChargerNm"));
-                s_list.setPblancNm(jsonObject.optString("pblancNm"));
-                s_list.setCreatPnttm(jsonObject.optString("creatPnttm"));
-                s_list.setCheckLike(false);
+                SupportModel supportList = JsonParsing_support(jsonObject);
 
                 //새로 생성된지 2일 이하면 새글
-                Date create = simpleDateFormat.parse(s_list.getCreatPnttm());
+                Date create = simpleDateFormat.parse(supportList.getCreatPnttm());
                 long differentTime = sync.getTime() - create.getTime();
                 long differentDay = differentTime/(24*60*60*1000);
                 //Log.d(TAG, "SyncData: differntDay="+differentDay);
                 if(differentDay <= 2)
-                    s_list.setCheckNew(true);
+                    supportList.setCheckNew(true);
                 else
-                    s_list.setCheckNew(false);
+                    supportList.setCheckNew(false);
 
-                //viewModel.insertSupportItem(s_list);
-                db.supportDAO().insert(s_list); //데이터 추가
+                db.supportDAO().insert(supportList); //데이터 추가
 
                 if(alertCheck && sync.compareTo(create) < 0)
-                    NotificationNewSupport(i,s_list.getCreatPnttm(),s_list.getPblancNm()); //새글 알림
+                    NotificationNewSupport(i,supportList.getCreatPnttm(),supportList.getPblancNm()); //새글 알림
             }
 
             end = System.currentTimeMillis();
@@ -132,7 +96,6 @@ public class SynchronizationData{
             //동기화 시간 업데이트
             Date syncDate = new Date(System.currentTimeMillis());
             String syncTime = simpleDateFormat.format(syncDate);
-            //viewModel.setSyncTime(syncTime);
             db.permitDAO().setSyncTime(syncTime);
 
             db.close();
@@ -144,12 +107,42 @@ public class SynchronizationData{
 
     }
 
+    public SupportModel JsonParsing_support(JSONObject jsonObject) throws JSONException {
+        SupportModel s_list = new SupportModel();
+
+        s_list.setPblancId(jsonObject.optString("pblancId"));
+        s_list.setIndustNm(jsonObject.optString("industNm"));
+        s_list.setRceptInsttEmailAdres(jsonObject.optString("rceptInsttEmailAdres"));
+        s_list.setInqireCo(jsonObject.optInt("inqireCo"));
+        s_list.setRceptEngnHmpgUrl(jsonObject.optString("rceptEngnHmpgUrl"));
+        s_list.setPblancUrl(jsonObject.optString("pblancUrl"));
+        s_list.setJrsdInsttNm(jsonObject.optString("jrsdInsttNm"));
+        s_list.setRceptEngnNm(jsonObject.optString("rceptEngnNm"));
+        s_list.setEntrprsStle(jsonObject.optString("entrprsStle"));
+        s_list.setPldirSportRealmLclasCodeNm(jsonObject.optString("pldirSportRealmLclasCodeNm"));
+        s_list.setTrgetNm(jsonObject.optString("trgetNm"));
+        s_list.setRceptInsttTelno(jsonObject.optString("rceptInsttTelno"));
+        s_list.setBsnsSumryCn(jsonObject.optString("bsnsSumryCn"));
+        s_list.setReqstBeginEndDe(jsonObject.optString("reqstBeginEndDe"));
+        s_list.setAreaNm(jsonObject.optString("areaNm"));
+        s_list.setPldirSportRealmMlsfcCodeNm(jsonObject.optString("pldirSportRealmMlsfcCodeNm"));
+        s_list.setRceptInsttChargerDeptNm(jsonObject.optString("rceptInsttChargerDeptNm"));
+        s_list.setRceptInsttChargerNm(jsonObject.optString("rceptInsttChargerNm"));
+        s_list.setPblancNm(jsonObject.optString("pblancNm"));
+        s_list.setCreatPnttm(jsonObject.optString("creatPnttm"));
+        s_list.setCheckLike(false);
+
+        return s_list;
+    }
+
+    //상단 팝업 알림
     public void NotificationNewSupport(int NOTIFICATION_ID,String id, String title){
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         Intent notificationIntent = new Intent(context, SupportActivity.class);
         notificationIntent.putExtra("newPostID",id); //전달할 값
+        notificationIntent.putExtra("newCheck",true);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
 

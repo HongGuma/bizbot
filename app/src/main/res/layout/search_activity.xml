@@ -39,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_weight="1"
-                android:hint="찾으실 세부내용을 입력하세요"
+                android:hint="검색하실 내용을 입력하세요"
                 android:textColorHint="#B5B5B5"
                 android:backgroundTint="#ffffff"
                 android:textColor="#000000" />

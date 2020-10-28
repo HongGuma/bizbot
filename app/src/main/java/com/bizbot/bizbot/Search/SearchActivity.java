@@ -161,6 +161,8 @@ public class SearchActivity extends AppCompatActivity {
 
                 PrintSearchResult(SEARCH_MODE.TITLE,searchResultRecyclerView,notSearch);
 
+                searchItemLayout.setVisibility(View.VISIBLE);
+
             }
         });
 
@@ -202,7 +204,7 @@ public class SearchActivity extends AppCompatActivity {
 
         String path = getFilesDir()+"/user.txt";
         File file = new File(path);
-        if(!file.exists())
+        //if(!file.exists())
             FileInit(file);
 
         try{
@@ -254,7 +256,13 @@ public class SearchActivity extends AppCompatActivity {
     public ArrayList<String> WordProcessing(ArrayList<String> wordList){
         ArrayList<String> processedStr = new ArrayList<>();
         for(String word:wordList){
+            if(word.equals("지원 사업") || word.equals("지원") || word.equals("사업"))
+                continue;
+            //단어 사이 공백 없애기 (ex : 중소 기업 -> 중소기업)
+            word = word.replace(" ","");
+
             processedStr.add(word);
+
             if(word.equals("코트라")){
                 processedStr.add("kotra");
                 processedStr.add("KOTRA");
